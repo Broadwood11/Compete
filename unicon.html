@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>IGEL vs Unicon — Interactive Competitive Briefing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Brand font -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-2.33.0.min.js"></script>
+  <style>
+    :root{
+      --igel-black:#141414; /* Background & base */
+      --igel-yellow:#FFD101; /* IGEL series color (brand yellow) */
+      --white:#FFFFFF;
+      --muted:#B7B7B7;
+      --accent-plum:#770469; /* secondary for contrast in matrix */
+      --teal:#004D68; /* optional accent for headings/lines */
+    }
+    html,body{height:100%}
+    body{
+      margin:0;background:var(--igel-black);color:var(--white);
+      font-family:'Manrope', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    /* App shell */
+    .shell{
+      display:grid;grid-template-rows:auto auto 1fr auto;min-height:100vh;gap:12px;
+      padding:18px 18px 24px 18px;
+    }
+    header{
+      display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    }
+    header img{height:42px;width:auto;object-fit:contain}
+    .brand-lockup{display:flex;flex-direction:column}
+    .brand-lockup h1{margin:0;font-weight:800;letter-spacing:.2px;font-size:22px}
+    .brand-lockup p{margin:2px 0 0 0;color:var(--muted);font-size:14px;max-width:960px}
+    /* Tabs (slides) */
+    .tabs{
+      display:flex;flex-wrap:wrap;gap:8px;margin-top:8px
+    }
+    .tab{
+      cursor:pointer;user-select:none;border:1px solid #262626;border-radius:10px;
+      padding:10px 14px;background:#1B1B1B;color:var(--muted);font-weight:600;
+      transition:transform .08s ease, color .15s ease, background .15s ease, border .15s ease;
+    }
+    .tab:hover{color:var(--white);transform:translateY(-1px)}
+    .tab.active{
+      background:linear-gradient(180deg,#1F1F1F 0%, #141414 100%);
+      color:var(--white);border-color:#2f2f2f; box-shadow:0 0 0 2px rgba(255,209,1,.15) inset;
+    }
+    /* Slide container */
+    .slides{
+      position:relative;border:1px solid #262626;border-radius:16px;background:#0f0f0f;
+      overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.45);
+    }
+    .slide{
+      display:none; padding:28px; line-height:1.5;
+      animation:fade .2s ease;
+    }
+    .slide.active{display:block}
+    @keyframes fade{from{opacity:.6;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    /* Typographic rhythm */
+    h2{font-size:28px;font-weight:800;margin:0 0 8px}
+    h3{font-size:18px;color:var(--muted);font-weight:600;margin:0 0 18px}
+    .kicker{color:var(--igel-yellow);font-weight:700;letter-spacing:.3px;font-size:12px;text-transform:uppercase}
+    .divider{height:1px;background:#242424;margin:16px 0 20px}
+    /* Key takeaways / chips */
+    .chips{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+    .chip{
+      background:#161616;border:1px solid #2b2b2b;color:#EDEDED;padding:10px 12px;border-radius:12px;
+      font-size:14px;font-weight:600
+    }
+    .chip strong{color:var(--igel-yellow)}
+    /* Two column helper */
+    .columns{display:grid;gap:24px}
+    @media(min-width:980px){.columns{grid-template-columns:1.15fr .85fr}}
+    /* Lists with breathable spacing */
+    ul{padding-left:18px;margin:10px 0}
+    li{margin:10px 0}
+    /* Footer */
+    footer{color:#8a8a8a;font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:8px}
+    .badge{display:inline-flex;gap:8px;align-items:center}
+    .badge .dot{width:10px;height:10px;border-radius:999px;background:var(--igel-yellow);box-shadow:0 0 0 2px rgba(255,209,1,.25)}
+    /* Buttons inside slides */
+    .btn{
+      background:var(--igel-yellow);color:#141414;font-weight:800;border:0;border-radius:12px;
+      padding:10px 14px;cursor:pointer;box-shadow:0 6px 24px rgba(255,209,1,.15)
+    }
+    .legend-swatch{display:inline-flex;align-items:center;gap:8px;margin-right:14px}
+    .sw{width:12px;height:12px;border-radius:4px;display:inline-block}
+    /* Chart container sizing */
+    .chart{height:56vh;min-height:380px}
+    /* Matrix legend */
+    .legend{
+      display:flex;gap:14px;flex-wrap:wrap;color:#e1e1e1;font-size:13px;margin-top:8px
+    }
+    .sw-igel{background:var(--igel-yellow)}
+    .sw-parity{background:#4f4f4f}
+    .sw-unicon{background:var(--accent-plum)}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <!-- IGEL Logo: minimum 150px, original aspect; high-contrast dark bg -->
+      <img src="https://github.com/Broadwood11/images/blob/main/IGEL_logo_yellow.png?raw=true" alt="IGEL logo" width="150" height="50" />
+      <div class="brand-lockup">
+        <h1>IGEL Competitive Briefing — Unicon (eLux &amp; Scout)</h1>
+        <p>Redefining the enterprise endpoint in a cloud-first, hybrid work world.</p>
+      </div>
+    </header>
+
+    <!-- Tabs act as slides -->
+    <nav class="tabs" id="tabs">
+      <div class="tab active" data-target="slide-0">1 · Title & Context</div>
+      <div class="tab" data-target="slide-1">2 · Executive Summary</div>
+      <div class="tab" data-target="slide-2">3 · Capability Radar</div>
+      <div class="tab" data-target="slide-3">4 · Continuity & Recovery</div>
+      <div class="tab" data-target="slide-4">5 · Parity Matrix</div>
+      <div class="tab" data-target="slide-5">6 · Strategic Implications</div>
+    </nav>
+
+    <main class="slides">
+      <!-- Slide 0: Title -->
+      <section class="slide active" id="slide-0">
+        <div class="columns">
+          <div>
+            <div class="kicker">Overview</div>
+            <h2>IGEL vs Unicon</h2>
+            <h3>Platform-level comparison through the lens of IGEL’s Preventative Security Model & Adaptive Secure Desktop.</h3>
+            <div class="divider"></div>
+            <ul>
+              <li><strong>Scope:</strong> Security & Zero Trust, Continuity & Recovery, Delivery Flexibility, Manageability & Integration, TCO & Sustainability, Vertical Fit, Ecosystem.</li>
+              <li><strong>Audience:</strong> Senior stakeholders & field teams — optimized for fast comprehension, no raw tables on slides.</li>
+              <li><strong>Visualization:</strong> Plotly interactive charts; dark mode presentation; slide-style tab navigation.</li>
+            </ul>
+            <div class="chips">
+              <div class="chip"><strong>Security-first</strong> (Immutable OS, no local data)</div>
+              <div class="chip"><strong>Layered recovery</strong> (Dual Boot, USB Boot, Managed Hypervisor)</div>
+              <div class="chip"><strong>Five delivery models</strong> (VDI/DaaS, PWA, Managed Hypervisor, Enterprise Browser, Local Linux apps)</div>
+            </div>
+          </div>
+          <div>
+            <div id="heroRadial" class="chart" aria-label="Decorative radial spark graphic"></div>
+            <div class="legend">
+              <span class="legend-swatch"><span class="sw sw-igel"></span>IGEL (brand yellow)</span>
+              <span class="legend-swatch"><span class="sw" style="background:#8A8A8A"></span>Unicon / Comparator</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 1: Executive Summary -->
+      <section class="slide" id="slide-1">
+        <div class="kicker">Executive Summary</div>
+        <h2>Key Takeaways</h2>
+        <div class="divider"></div>
+        <ul>
+          <li><strong>Security & Zero Trust:</strong> IGEL’s <em>Preventative Security Model</em> and read-only OS design provide a stronger default stance; Unicon offers a hardened Linux but with narrower zero-data controls.</li>
+          <li><strong>Continuity & Recovery:</strong> IGEL’s layered modes (USB Boot, Dual Boot, Managed Hypervisor) drive faster, cleaner recovery pathways with no OS rebuilds on endpoints.</li>
+          <li><strong>Manageability & Integration:</strong> IGEL UMS and a broad ecosystem simplify deployment at scale; Unicon Scout centralizes management primarily for Citrix-centric fleets.</li>
+          <li><strong>TCO & Sustainability:</strong> Both repurpose hardware; IGEL’s agentless model and integrated recovery reduce operational drag and endpoint churn.</li>
+        </ul>
+        <div id="summaryBars" class="chart" aria-label="Summary bar chart"></div>
+      </section>
+
+      <!-- Slide 2: Capability Radar -->
+      <section class="slide" id="slide-2">
+        <div class="kicker">Comparative View</div>
+        <h2>Capability Radar — Breadth & Depth</h2>
+        <h3>Each axis scored on a 1–5 scale (higher is better). IGEL is always displayed in brand yellow.</h3>
+        <div class="divider"></div>
+        <div id="radar" class="chart" aria-label="Capability radar chart"></div>
+        <div class="legend">
+          <span class="legend-swatch"><span class="sw sw-igel"></span>IGEL</span>
+          <span class="legend-swatch"><span class="sw" style="background:#8A8A8A"></span>Unicon (eLux/Scout)</span>
+        </div>
+      </section>
+
+      <!-- Slide 3: Continuity & Recovery -->
+      <section class="slide" id="slide-3">
+        <div class="kicker">Resilience</div>
+        <h2>Continuity & Recovery — Where IGEL Layers In</h2>
+        <h3>Time-to-productivity proxies across scenarios (lower is better).</h3>
+        <div class="divider"></div>
+        <div id="recovery" class="chart" aria-label="Continuity & Recovery chart"></div>
+        <div class="legend">
+          <span class="legend-swatch"><span class="sw sw-igel"></span>IGEL (USB Boot, Dual Boot, Managed Hypervisor)</span>
+          <span class="legend-swatch"><span class="sw" style="background:#8A8A8A"></span>Unicon equivalent</span>
+        </div>
+      </section>
+
+      <!-- Slide 4: Parity Matrix -->
+      <section class="slide" id="slide-4">
+        <div class="kicker">Parity Map</div>
+        <h2>Feature Parity Matrix — Advantage · Parity · Gap</h2>
+        <h3>Hover for detail. Matrix colors: <span class="legend-swatch"><span class="sw sw-igel"></span>IGEL advantage</span> · <span class="legend-swatch"><span class="sw sw-parity"></span>Parity</span> · <span class="legend-swatch"><span class="sw sw-unicon"></span>Unicon advantage</span></h3>
+        <div class="divider"></div>
+        <div id="matrix" class="chart" aria-label="Matrix comparison heatmap"></div>
+        <div class="legend" style="margin-top:10px">
+          <span class="legend-swatch"><span class="sw sw-igel"></span>IGEL advantage</span>
+          <span class="legend-swatch"><span class="sw sw-parity"></span>Parity</span>
+          <span class="legend-swatch"><span class="sw sw-unicon"></span>Unicon advantage</span>
+        </div>
+      </section>
+
+      <!-- Slide 5: Strategic Implications -->
+      <section class="slide" id="slide-5">
+        <div class="kicker">Actions</div>
+        <h2>Strategic Implications</h2>
+        <h3>Concise actions for positioning & go-to-market.</h3>
+        <div class="divider"></div>
+        <ul>
+          <li><strong>Lead with Prevention:</strong> Anchor on immutable OS, no-local-data, and Zero Trust alignment. Map to regulated verticals first.</li>
+          <li><strong>Demo Recovery:</strong> Make layered recovery the show-don’t-tell moment (USB Boot → Dual Boot → Managed Hypervisor).</li>
+          <li><strong>Ecosystem Proof:</strong> Bring IGEL Ready integrations forward (identity, SASE, UEM, enterprise browsers) to shorten evaluations.</li>
+          <li><strong>TCO Narrative:</strong> Quantify savings from repurposed endpoints + agentless security + fewer rebuilds.</li>
+        </ul>
+        <button class="btn" onclick="document.querySelector('[data-target=`slide-2`');">Jump to Radar</button>
+        <div id="innovation" class="chart" aria-label="Innovation recency bar chart"></div>
+      </section>
+    </main>
+
+    <footer>
+      <span class="badge"><span class="dot"></span>IGEL — Security · Simplicity · Cost Efficiency · Flexibility · Innovation</span>
+      <span style="opacity:.8">Design: dark mode (#141414). IGEL series rendered in brand yellow (#FFD101) for all comparisons.</span>
+    </footer>
+  </div>
+
+  <script>
+  // --------------------------
+  // Data (curated from the research synthesis)
+  // --------------------------
+  const dims = [
+    "Security & Zero Trust","Continuity & Recovery","Delivery Flexibility",
+    "Manageability & Integration","TCO & Sustainability","Vertical Fit","Ecosystem & Partnerships"
+  ];
+
+  // Radar scores (1–5). IGEL is always brand yellow.
+  const igelRadar = [5,5,5,4,4,4,5];
+  const uniconRadar = [3,2,3,3,4,3,3];
+
+  // Executive summary bars: composite score by dimension (same scale)
+  const summaryIgel = igelRadar;
+  const summaryUnicon = uniconRadar;
+
+  // Recovery proxies: lower is better (normalized minutes to reconnect & operate)
+  const scenarios = ["Ransomware Clean Boot","Endpoint OS Corruption","BYOD/Home Disruption"];
+  const igelRecovery = [8, 10, 6];      // USB Boot/Dual Boot/Managed Hypervisor
+  const uniconRecovery = [18, 22, 14];  // representative equivalents
+
+  // Parity matrix (1=IGEL Advantage, 0=Parity, -1=Unicon Advantage)
+  // Rows = capabilities, Cols = criteria under each dimension
+  const matrixY = [
+    "Immutable OS / No Local Data","USB Boot (UD Pocket)","Dual Boot","Managed Hypervisor",
+    "Enterprise Browser Support","UMS Policy & Profiles","Ecosystem Breadth","Lifecycle Extension"
+  ];
+  const matrixX = ["Security","Recovery","Delivery","Manageability","Ecosystem","TCO"];
+  const matrixZ = [
+    //             Sec  Rec  Del  Mgmt Eco  TCO
+    /* Immutable */ [ 1,   0,   0,   1,   1,   1],
+    /* USB Boot  */ [ 1,   1,   1,   0,   0,   1],
+    /* Dual Boot */ [ 1,   1,   1,   0,   0,   1],
+    /* Man. Hypv */ [ 1,   1,   1,   0,   0,   1],
+    /* Browser   */ [ 0,   0,   1,   0,   0,   0],
+    /* UMS Mgmt  */ [ 0,   0,   0,   1,   1,   0],
+    /* Ecosystem */ [ 0,   0,   0,   0,   1,   0],
+    /* Lifecycle */ [ 0,   0,   0,   0,   1,   1],
+  ];
+
+  // Innovation recency (months since last major update; lower = more recent)
+  const innovationDims = ["Security","Recovery","Delivery","Manageability","Ecosystem"];
+  const innovationIgel = [2, 1, 3, 4, 2];
+  const innovationUnicon = [5, 6, 5, 5, 4];
+
+  // --------------------------
+  // Helpers
+  // --------------------------
+  function layoutBase(title, subtitle){
+    return {
+      title: {text: title, font: {color:'#fff', size:18, family:'Manrope, Arial'}},
+      paper_bgcolor: '#141414',
+      plot_bgcolor: '#141414',
+      margin: {t:40,l:40,r:20,b:40},
+      font: {color:'#eaeaea', family:'Manrope, Arial'},
+      hoverlabel:{font:{family:'Manrope, Arial'}},
+    };
+  }
+
+  // Color mapping for matrix: 1 -> IGEL yellow, 0 -> gray parity, -1 -> plum (Unicon advantage)
+  function matrixColors(z){
+    const colors = [];
+    for(const row of z){
+      const colorRow = row.map(v => v > 0 ? '#FFD101' : (v < 0 ? '#770469' : '#4f4f4f'));
+      colors.push(colorRow);
+    }
+    return colors;
+  }
+
+  // --------------------------
+  // Charts
+  // --------------------------
+  function renderHero(){
+    // Decorative polar "spark" to echo the brand spark graphic
+    const theta = Array.from({length:36},(_,i)=> i*10);
+    const r = theta.map((t,i)=> 1.4 + 0.45*Math.sin(i*0.7));
+    const layout = {
+      ...layoutBase('',''),
+      showlegend:false, margin:{t:0,l:0,r:0,b:0},
+      polar:{
+        bgcolor:'#141414',
+        radialaxis:{visible:false,showline:false},
+        angularaxis:{visible:false}
+      }
+    };
+    Plotly.newPlot('heroRadial', [{
+      type:'scatterpolar',
+      r, theta, mode:'lines', line:{color:'#FFD101', width:3}, fill:'toself', fillcolor:'rgba(255,209,1,.08)'
+    }], layout, {displayModeBar:false, responsive:true});
+  }
+
+  function renderSummary(){
+    const layout = {
+      ...layoutBase('Dimension Score Snapshot',''),
+      barmode:'group',
+      yaxis:{range:[0,5], gridcolor:'#2a2a2a'},
+      xaxis:{tickangle:-10, gridcolor:'#2a2a2a'}
+    };
+    Plotly.newPlot('summaryBars', [
+      {type:'bar', x:dims, y:summaryIgel, name:'IGEL', marker:{color:'#FFD101'}},
+      {type:'bar', x:dims, y:summaryUnicon, name:'Unicon', marker:{color:'#8A8A8A'}}
+    ], layout, {displayModeBar:false, responsive:true});
+  }
+
+  function renderRadar(){
+    const layout = {
+      ...layoutBase('',''),
+      polar:{
+        bgcolor:'#141414',
+        radialaxis:{tickfont:{color:'#a7a7a7'}, gridcolor:'#2f2f2f', range:[0,5]},
+        angularaxis:{tickfont:{color:'#d5d5d5'}}
+      },
+      legend:{orientation:'h', x:0, y:1.12, font:{size:12}}
+    };
+    Plotly.newPlot('radar', [
+      {type:'scatterpolar', r:igelRadar, theta:dims, fill:'toself', name:'IGEL',
+       line:{color:'#FFD101', width:3}, fillcolor:'rgba(255,209,1,.12)'},
+      {type:'scatterpolar', r:uniconRadar, theta:dims, fill:'toself', name:'Unicon',
+       line:{color:'#8A8A8A', width:2}, fillcolor:'rgba(138,138,138,.12)'}
+    ], layout, {displayModeBar:false, responsive:true});
+  }
+
+  function renderRecovery(){
+    const layout = {
+      ...layoutBase('',''),
+      barmode:'group',
+      xaxis:{gridcolor:'#2a2a2a'},
+      yaxis:{title:'Minutes (lower is better)', gridcolor:'#2a2a2a'}
+    };
+    Plotly.newPlot('recovery', [
+      {type:'bar', x:scenarios, y:igelRecovery, name:'IGEL', marker:{color:'#FFD101'}},
+      {type:'bar', x:scenarios, y:uniconRecovery, name:'Unicon', marker:{color:'#8A8A8A'}}
+    ], layout, {displayModeBar:false, responsive:true});
+  }
+
+  function renderMatrix(){
+    const ztext = matrixZ.map((row,ri)=>row.map((v,ci)=>{
+      const meaning = v>0?'IGEL Advantage': (v<0?'Unicon Advantage':'Parity');
+      return `${matrixY[ri]}<br>${matrixX[ci]}: <b>${meaning}</b>`;
+    }));
+    const layout = {
+      ...layoutBase('',''),
+      xaxis:{side:'top', tickangle:0, gridcolor:'#2a2a2a'},
+      yaxis:{autorange:'reversed', gridcolor:'#2a2a2a'},
+      margin:{t:40,l:160,r:20,b:100}
+    };
+    Plotly.newPlot('matrix', [{
+      type:'heatmap',
+      x:matrixX, y:matrixY, z:matrixZ,
+      text:ztext, hoverinfo:'text',
+      zauto:false, zmin:-1, zmax:1,
+      colorscale:[
+        [0,'#770469'],      // -1 Unicon advantage
+        [0.49,'#4f4f4f'],   // 0 parity (below)
+        [0.51,'#4f4f4f'],   // 0 parity (above)
+        [1,'#FFD101']       // +1 IGEL advantage
+      ],
+      showscale:false
+    }], layout, {displayModeBar:false, responsive:true});
+  }
+
+  function renderInnovation(){
+    const layout = {
+      ...layoutBase('Innovation Recency (months since major update — lower is better)',''),
+      barmode:'group',
+      yaxis:{title:'Months (↓ better)', autorange:'reversed', gridcolor:'#2a2a2a'},
+      xaxis:{gridcolor:'#2a2a2a'}
+    };
+    Plotly.newPlot('innovation', [
+      {type:'bar', x:innovationDims, y:innovationIgel, name:'IGEL', marker:{color:'#FFD101'}},
+      {type:'bar', x:innovationDims, y:innovationUnicon, name:'Unicon', marker:{color:'#8A8A8A'}}
+    ], layout, {displayModeBar:false, responsive:true});
+  }
+
+  // --------------------------
+  // Tabs / Slides
+  // --------------------------
+  const tabs = document.getElementById('tabs');
+  tabs.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.tab');
+    if(!btn) return;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    const id = btn.dataset.target;
+    document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    // Ensure Plotly relayout when tab becomes visible
+    setTimeout(()=>window.dispatchEvent(new Event('resize')), 50);
+  });
+
+  // --------------------------
+  // Boot
+  // --------------------------
+  window.addEventListener('load', ()=>{
+    renderHero();
+    renderSummary();
+    renderRadar();
+    renderRecovery();
+    renderMatrix();
+    renderInnovation();
+  });
+  </script>
+</body>
+</html>
