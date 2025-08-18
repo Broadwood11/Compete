@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IGEL vs Unicon (eLux) — Sales Enablement</title>
+
+  <!-- Manrope (primary), Arial (fallback) -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#141414;             /* brand background */
+      --text:#EDEDED;           /* high-contrast text on black */
+      --muted:#B8B8B8;
+      --igel:#FFD101;           /* IGEL yellow */
+      --teal:#004D68;
+      --plum:#770469;
+      --blue:#001C99;
+      --purple:#4500A6;
+      --grey:#43433D;
+
+      /* matrix colors */
+      --adv:#27AE60;            /* IGEL advantage (green) */
+      --par:#FFC107;            /* parity (amber/yellow) */
+      --gap:#E74C3C;            /* gap (red) */
+
+      --card:#1E1E1E;
+      --border:#2A2A2A;
+      --chip:#0F0F0F;
+      --shadow: 0 14px 40px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+
+    html,body{background:var(--bg); color:var(--text); font-family:"Manrope","Arial",system-ui,-apple-system,Segoe UI,Roboto; line-height:1.35; margin:0}
+    a{color:var(--igel); text-decoration: none}
+    a:hover{text-decoration: underline}
+    .wrap{max-width:1100px; margin:0 auto; padding:28px 18px 64px}
+    header{
+      display:flex; align-items:center; gap:18px; margin:8px 0 22px;
+      border-bottom:1px solid var(--border); padding-bottom:16px;
+    }
+    header img{
+      height:auto; width:220px; /* >=150px, keeps aspect ratio */
+      filter: drop-shadow(0 0 0 rgba(0,0,0,0)); /* no effects per usage policy */
+    }
+    .tag{display:inline-flex; align-items:center; gap:8px; background:var(--chip); border:1px solid var(--border); padding:6px 10px; border-radius:999px; color:var(--muted); font-size:12px}
+    .tag b{color:var(--igel)}
+    .hero{
+      background: linear-gradient(135deg, rgba(255,209,1,.09), rgba(0,28,153,.08) 60%, rgba(69,0,166,.08));
+      border:1px solid var(--border); border-radius: var(--radius); padding:22px 20px; box-shadow: var(--shadow); margin: 10px 0 24px;
+    }
+    h1{font-weight:800; margin:6px 0 12px; letter-spacing:.2px}
+    h2{font-weight:800; margin:18px 0 10px}
+    h3{font-weight:700; margin:16px 0 8px}
+    p{margin:10px 0 12px}
+    .kpi{display:grid; grid-template-columns: repeat(4,1fr); gap:10px; margin-top:12px}
+    .kpi .item{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px}
+    .kpi .item .v{font-size:22px; font-weight:800; color:var(--igel)}
+    .chips{display:flex; gap:8px; flex-wrap:wrap; margin:6px 0}
+    .chip{padding:6px 10px; border-radius:999px; font-weight:600; font-size:12px; border:1px solid var(--border)}
+    .chip.teal{background:rgba(0,77,104,.18); color:#BFE8F5; border-color:rgba(0,77,104,.35)}
+    .chip.plum{background:rgba(119,4,105,.18); color:#FFD6FA; border-color:rgba(119,4,105,.35)}
+    .chip.blue{background:rgba(0,28,153,.18); color:#D7E0FF; border-color:rgba(0,28,153,.35)}
+    .chip.purple{background:rgba(69,0,166,.18); color:#E4D7FF; border-color:rgba(69,0,166,.35)}
+    .chip.grey{background:rgba(67,67,61,.25); color:#E8E8E6; border-color:rgba(67,67,61,.4)}
+
+    .grid{display:grid; gap:16px}
+    @media(min-width:980px){ .grid.cols-2{grid-template-columns:1fr 1fr} .grid.cols-3{grid-template-columns:repeat(3,1fr)} }
+
+    .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px 16px 12px; box-shadow: var(--shadow)}
+    .subtle{color:var(--muted); font-size:13px}
+    .bar{height:10px; background:linear-gradient(90deg, var(--igel), var(--teal)); border-radius:999px; width:100%; opacity:.7}
+    .lead{font-size:18px}
+
+    .pill{display:inline-block; padding:6px 10px; border-radius:999px; font-weight:700; letter-spacing:.3px; border:1px solid var(--border); background:var(--chip)}
+    .pill.igel{color:#111; background:var(--igel); border-color:rgba(255,209,1,.8)}
+    .pill.uni{color:#EDEDED; background:#222; border-color:#3A3A3A}
+
+    /* Feature matrix table */
+    table{width:100%; border-collapse: collapse; margin-top:10px}
+    th,td{padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align:middle}
+    th{font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+    td.key{font-weight:700}
+    .dot{display:inline-flex; align-items:center; gap:8px; font-weight:700}
+    .dot i{display:inline-block; width:12px; height:12px; border-radius:50%}
+    .adv i{background:var(--adv)}
+    .par i{background:var(--par)}
+    .gap i{background:var(--gap)}
+    .hint{font-size:12px; color:var(--muted)}
+
+    /* Two-up comparisons */
+    .two{display:grid; gap:14px}
+    @media(min-width:860px){ .two{grid-template-columns:1fr 1fr} }
+    .callout{border-left:4px solid var(--igel); padding-left:12px}
+
+    /* Toggle sections */
+    details{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin:10px 0}
+    details summary{cursor:pointer; font-weight:700}
+    code.copy{user-select: all; background: rgba(255,209,1,.12); padding:2px 6px; border:1px dashed rgba(255,209,1,.4); border-radius:6px}
+
+    /* Footer */
+    footer{margin-top:24px; border-top:1px solid var(--border); padding-top:16px; color:var(--muted); font-size:12px}
+
+    /* Print */
+    @media print{
+      header, .bar, .chips, .tag, .hint, details summary::after { display:none !important; }
+      .card{box-shadow:none}
+      a{color:#000}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img src="https://github.com/Broadwood11/images/blob/main/IGEL_logo_yellow.png?raw=true" alt="IGEL logo" />
+      <div>
+        <div class="tag"><b>Internal Enablement</b> • IGEL vs Unicon (eLux &amp; Scout)</div>
+        <h1>Positioning Guide: <span style="color:var(--igel)">IGEL</span> vs <span style="color:#bbb">Unicon</span></h1>
+        <div class="subtle">Use this page to prep discovery, objection handling, and competitive framing. Tables = keywords only; talk tracks live in the cards.</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="chips">
+        <span class="chip teal">Preventative Security Model</span>
+        <span class="chip blue">Preventative Security Architecture</span>
+        <span class="chip purple">Adaptive Secure Desktop</span>
+        <span class="chip plum">Continuity &amp; Recovery</span>
+        <span class="chip grey">UMS &amp; Ecosystem</span>
+      </div>
+      <div class="lead">
+        IGEL is the <b>secure endpoint OS</b> built for SaaS, DaaS/VDI, enterprise browsers and local Linux-equivalents — with <b>immutable OS, no local data</b>, and <b>layered recovery</b> options (UD Pocket, Dual Boot, Managed Hypervisor) to keep work running on any x86-64 device.
+      </div>
+      <div class="kpi">
+        <div class="item"><div class="v">Zero-Trust Edge</div><div class="subtle">Immutable, read-only OS; policy-driven access</div></div>
+        <div class="item"><div class="v">5 Delivery Modes</div><div class="subtle">VDI/DaaS • PWA • Managed Hypervisor • Enterprise Browser • Local Linux Apps</div></div>
+        <div class="item"><div class="v">Continuity</div><div class="subtle">USB Boot (UD Pocket) • Dual Boot • Managed Hypervisor</div></div>
+        <div class="item"><div class="v">IGEL Ready</div><div class="subtle">Breadth of certified devices &amp; integrations</div></div>
+      </div>
+    </section>
+
+    <!-- QUICK COMPARISON BLURBS -->
+    <section class="grid cols-2">
+      <div class="card">
+        <span class="pill igel">IGEL (Baseline)</span>
+        <h3>What to lead with</h3>
+        <ul>
+          <li class="callout">Preventative model: <b>remove the endpoint attack surface</b> (immutable OS, no local data) instead of chasing patches.</li>
+          <li>Continuity without external DR tools: UD Pocket / Dual Boot / Managed Hypervisor.</li>
+          <li>Delivery flexibility: covers virtual, browser, and local Linux app equivalents.</li>
+          <li>Large ecosystem (IGEL Ready), certified device options (HP/Lenovo/LG).</li>
+          <li>TCO: extend device life, agentless security posture, lower energy footprint.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="pill uni">Unicon (eLux &amp; Scout)</span>
+        <h3>How to frame the alternative</h3>
+        <ul>
+          <li>Purpose-built for Citrix; <b>write-protected Linux</b> and centralized management (Scout).</li>
+          <li>Strong for boot-to-VDI use cases; emphasizes repurposing Windows PCs.</li>
+          <li>Continuity mainly via <b>recovery USB</b> and reimaging flows; no layered recovery modes equivalent to IGEL’s full set.</li>
+          <li>Ecosystem breadth <i>(device &amp; ISV)</i> narrower vs. IGEL Ready catalogue.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- FEATURE PARITY MATRIX -->
+    <section class="card" style="margin-top:18px">
+      <h2>Feature Parity Matrix</h2>
+      <div class="hint">Legend: <span class="dot adv"><i></i>IGEL Advantage</span> • <span class="dot par"><i></i>Parity / Similar</span> • <span class="dot gap"><i></i>Unicon Advantage</span></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Definition</th>
+            <th>IGEL</th>
+            <th>Unicon (eLux)</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="key">Security & Zero Trust</td>
+            <td>Immutable OS, no local data, policy enforcement</td>
+            <td class="dot adv"><i></i>Adv</td>
+            <td class="dot par"><i></i>Parity</td>
+            <td>eLux is write-protected; IGEL adds opinionated Preventative Security Model &amp; “no local data” everywhere.</td>
+          </tr>
+          <tr>
+            <td class="key">Continuity & Recovery</td>
+            <td>UD Pocket, Dual Boot, Managed Hypervisor</td>
+            <td class="dot adv"><i></i>Adv</td>
+            <td class="dot gap"><i></i>Gap</td>
+            <td>Unicon: recovery USB &amp; reimage; no direct parity for <b>Dual Boot</b> or <b>Managed Hypervisor</b>.</td>
+          </tr>
+          <tr>
+            <td class="key">Delivery Flexibility</td>
+            <td>VDI/DaaS + PWA + Browser + Local Linux</td>
+            <td class="dot adv"><i></i>Adv</td>
+            <td class="dot par"><i></i>Parity</td>
+            <td>Both excel in VDI; IGEL adds broader enterprise browser &amp; local-equivalent story out-of-box.</td>
+          </tr>
+          <tr>
+            <td class="key">Manageability & Integration</td>
+            <td>UMS, identity, SASE, UEM</td>
+            <td class="dot adv"><i></i>Adv</td>
+            <td class="dot par"><i></i>Parity</td>
+            <td>Scout is strong for Citrix estates; IGEL’s UMS + IGEL Ready covers multi-vendor edge + SSO/SASE breadth.</td>
+          </tr>
+          <tr>
+            <td class="key">TCO & Sustainability</td>
+            <td>Lifecycle extension, agentless security</td>
+            <td class="dot par"><i></i>Parity</td>
+            <td class="dot par"><i></i>Parity</td>
+            <td>Both repurpose hardware and reduce refresh cycles; IGEL highlights <i>agentless</i> preventative posture.</td>
+          </tr>
+          <tr>
+            <td class="key">Vertical / Use-Case Fit</td>
+            <td>Healthcare, Finance, Gov, Manufacturing, Retail</td>
+            <td class="dot adv"><i></i>Adv</td>
+            <td class="dot par"><i></i>Parity</td>
+            <td>IGEL proven with fast-login workflows (e.g., shared clinical workstations, tap-in SSO).</td>
+          </tr>
+          <tr>
+            <td class="key">Ecosystem & Hardware</td>
+            <td>IGEL Ready, certified devices</td>
+            <td class="dot adv"><i></i>Adv</td>
+            <td class="dot par"><i></i>Parity</td>
+            <td>Unicon is now within Citrix stack; IGEL Ready remains vendor-diverse for endpoints &amp; ISVs.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- DIFFERENTIATORS & GAP WATCH -->
+    <section class="grid cols-2" style="margin-top:16px">
+      <div class="card">
+        <h2>Differentiator Callouts (Use in Discovery)</h2>
+        <ul>
+          <li><b>Layered recovery</b> (USB, Dual Boot, Managed Hypervisor) — clean-boot in minutes to resume collaboration tools while infra is remediated.</li>
+          <li><b>Preventative Security Architecture</b> — immutable OS state, no local data, secure boot, MFA/SSO; shrink attack surface vs. agent sprawl.</li>
+          <li><b>Adaptive Secure Desktop</b> — role/context-based access across DaaS, browser, PWA, and local Linux equivalents.</li>
+          <li><b>Ecosystem leverage</b> — broad IGEL Ready catalog and multiple certified device OEMs.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Gap Watchlist (Monitor & Counter)</h2>
+        <ul>
+          <li><b>Citrix bundling</b>: Unicon now packaged inside Citrix motions; accounts might perceive it as the “default.” Counter with <i>multi-vendor flexibility</i> + non-Citrix use cases.</li>
+          <li><b>Boot-to-VDI narratives</b>: If the buyer is 100% CVAD, Unicon’s simplicity resonates. Reframe to IGEL’s <i>five delivery models</i> and <i>continuity</i>.</li>
+          <li><b>“Write-protected is the same”</b>: Clarify that IGEL’s <i>no local data</i> + recovery modes are operationally different from simple write-protection.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- TALK TRACKS -->
+    <section class="grid cols-3" style="margin-top:16px">
+      <div class="card">
+        <h3>Talk Track — Security</h3>
+        <p>“Instead of defending a fragile, patch-heavy OS, IGEL <b>removes the local attack surface</b>. Immutable OS + no local data + Secure Boot equals fewer incidents and less drift.”</p>
+        <details><summary>30-sec version</summary><code class="copy">Immutable OS + no local data + recovery in minutes. Shrink attack surface and keep people working.</code></details>
+      </div>
+      <div class="card">
+        <h3>Talk Track — Continuity</h3>
+        <p>“If Windows is compromised, <b>clean-boot into IGEL OS</b> via UD Pocket or Dual Boot and keep Teams/Zoom/Office flowing while IT remediates. No external DR tooling.”</p>
+        <details><summary>Objection: ‘We have a reimage process’</summary><p class="subtle">Reimaging is hours and loses productivity. IGEL’s clean-boot is minutes and preserves operations.</p></details>
+      </div>
+      <div class="card">
+        <h3>Talk Track — Flexibility</h3>
+        <p>“Whatever the workspace — Citrix, AVD, browser-based apps, or local Linux equivalents — IGEL’s <b>Adaptive Secure Desktop</b> routes users with policy, not new agents.”</p>
+      </div>
+    </section>
+
+    <!-- VERTICAL SNAPSHOTS -->
+    <section class="two" style="margin-top:16px">
+      <div class="card">
+        <h2>Vertical Snapshots</h2>
+        <ul>
+          <li><b>Healthcare</b>: tap-in SSO, shared stations, no-data-left-behind, fast clean-boot during ransomware events.</li>
+          <li><b>Financial Services</b>: strong MFA/SSO posture, least-privilege desktops, browser-isolation patterns.</li>
+          <li><b>Government</b>: immutable state &amp; centralized policy for compliance, offline-resilient device posture.</li>
+          <li><b>Manufacturing/Retail</b>: kiosk &amp; floor devices, PWA models, minimal downtime via UD Pocket.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Qualification (MEDDPICC-style prompts)</h2>
+        <ul>
+          <li><b>Metrics:</b> device refresh cycle? ransomware MTTR? % of SaaS vs VDI?</li>
+          <li><b>Economic buyer:</b> CISO vs EUC leader — who owns endpoint risk?</li>
+          <li><b>Pain:</b> patch velocity, incident reimaging time, hybrid app mix.</li>
+          <li><b>Paper process:</b> security review for “no local data” and immutable OS?</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- OBJECTIONS -->
+    <section class="grid cols-2" style="margin-top:16px">
+      <div class="card">
+        <h2>Common Objections & Reframes</h2>
+        <ul>
+          <li><b>“Write-protected equals secure.”</b> → Not if credentials/apps still persist. IGEL enforces <i>no local data</i> and immutability with recovery modes.</li>
+          <li><b>“We’re all-in on Citrix.”</b> → Great; IGEL supports CVAD <i>and</i> broadens to browser &amp; local Linux workloads + continuity.</li>
+          <li><b>“We can just reimage.”</b> → That is downtime. IGEL clean-boots in minutes; users work while IT fixes root cause.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Battlecard One-Liners</h2>
+        <ul>
+          <li><b>Security:</b> Prevent, don’t chase — immutable OS + no local data.</li>
+          <li><b>Continuity:</b> USB / Dual Boot / Managed Hypervisor.</li>
+          <li><b>Flexibility:</b> VDI • Browser • PWA • Local Linux equiv.</li>
+          <li><b>Ecosystem:</b> IGEL Ready integrations &amp; certified hardware.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- QUICK LINKS (optional to tailor) -->
+    <section class="card" style="margin-top:16px">
+      <h2>Helpful Links for Reps</h2>
+      <p class="subtle">Tip: Keep these handy; share only externally appropriate assets.</p>
+      <ul>
+        <li>UD Pocket (USB Boot) overview</li>
+        <li>Business Continuity (Dual Boot &amp; clean-boot) explainer</li>
+        <li>Preventative Security Model &amp; Architecture</li>
+        <li>IGEL Managed Hypervisor overview</li>
+        <li>IGEL Ready ecosystem catalog</li>
+      </ul>
+    </section>
+
+    <footer>
+      <div>© IGEL. Internal enablement. Logo is used at ≥150px width, original aspect ratio, no effects; contrast on #141414 ≥ 4.5:1. If remote logo fails to load, render “IGEL” in #F9D342, Helvetica-Bold 700 at 30pt in the logo-position.</div>
+    </footer>
+  </div>
+
+  <!-- Fallback if logo fails (policy note) -->
+  <script>
+    (function(){
+      const img = document.querySelector('header img');
+      if(!img) return;
+      img.addEventListener('error', () => {
+        const fallback = document.createElement('div');
+        fallback.textContent = 'IGEL';
+        fallback.style.cssText = 'font:700 30pt Helvetica,Arial,sans-serif;color:#F9D342;';
+        img.replaceWith(fallback);
+      });
+    })();
+  </script>
+</body>
+</html>
