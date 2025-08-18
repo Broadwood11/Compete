@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IGEL | Competitive Capability Deck (Interactive)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind CSS (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <!-- Manrope font (fallback: Arial) -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet" />
+  <!-- Plotly (latest stable, no version hardcoding) -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    :root{
+      --igel-bg:#141414;
+      --igel-yellow:#FFD101;
+      --igel-text:#EAEAEA;
+      --hc:#004D68; /* Healthcare Teal */
+      --fin:#770469;/* Finance Plum */
+      --gov:#001C99;/* Government Blue */
+      --ret:#4500A6;/* Retail Purple */
+      --mfg:#43433D;/* Manufacturing Grey */
+    }
+    html,body{background:var(--igel-bg);color:var(--igel-text);font-family:"Manrope","Arial",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",sans-serif;}
+    .brand-yellow{color:var(--igel-yellow)}
+    .btn-igel{background:var(--igel-yellow);color:#111;transition:transform .08s ease, box-shadow .2s ease;}
+    .btn-igel:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,209,1,.25);}
+    .btn-ghost{border:1px solid var(--igel-yellow);color:var(--igel-yellow)}
+    .tab-link{color:#111;background:rgba(255,209,1,.85);border:2px solid rgba(255,209,1,1);}
+    .tab-link.inactive{background:transparent;color:var(--igel-yellow);border-color:rgba(255,209,1,.5);}
+    .tab-link:focus{outline:3px solid #fff;outline-offset:2px}
+    .slide{display:none}
+    .slide.active{display:block}
+    .card{background:#1A1A1A;border:1px solid #2B2B2B;border-radius:16px}
+    .lead{color:#CFCFCF}
+    /* Chart containers ensure visibility on dark bg */
+    .chart-box{background:#0f0f0f;border:1px solid #2b2b2b;border-radius:14px}
+    /* Floating nav */
+    .float-nav{position:sticky;top:8px;z-index:50;display:flex;justify-content:center}
+    /* Logo rules per usage enforcement */
+    .logo-wrap img{width:180px;height:auto;filter:none;transform:none}
+    .accent-pill{font-size:.75rem;border-radius:999px;padding:.15rem .5rem;margin-right:.35rem}
+    .accent-hc{background:var(--hc);color:#E6F7FF}
+    .accent-fin{background:var(--fin);color:#FFE6FC}
+    .accent-gov{background:var(--gov);color:#E6ECFF}
+    .accent-ret{background:var(--ret);color:#F0E6FF}
+    .accent-mfg{background:var(--mfg);color:#F0F0EE}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pt-6">
+    <div class="flex items-center justify-between">
+      <div class="logo-wrap flex items-center space-x-4">
+        <img src="https://github.com/Broadwood11/images/blob/main/IGEL_logo_yellow.png?raw=true" alt="IGEL logo" />
+        <div>
+          <h1 class="text-2xl md:text-3xl font-extrabold brand-yellow tracking-tight">Preventative Security Platform</h1>
+          <p class="text-sm lead">Comparative capability overview &mdash; IGEL vs. Unicon (eLux &amp; Scout)</p>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center">
+        <span class="accent-pill accent-hc">Healthcare</span>
+        <span class="accent-pill accent-fin">Finance</span>
+        <span class="accent-pill accent-gov">Government</span>
+        <span class="accent-pill accent-ret">Retail</span>
+        <span class="accent-pill accent-mfg">Manufacturing</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Floating Tab Navigation -->
+  <nav class="float-nav mt-6">
+    <div class="inline-flex rounded-full bg-black bg-opacity-40 p-1 border border-yellow-400">
+      <button class="tab-link px-4 py-2 rounded-full text-sm font-semibold mx-0.5" data-target="slide-1" aria-controls="slide-1" aria-selected="true">Stage 1 · Framework</button>
+      <button class="tab-link inactive px-4 py-2 rounded-full text-sm font-semibold mx-0.5" data-target="slide-2" aria-controls="slide-2" aria-selected="false">Stage 2 · Intelligence</button>
+      <button class="tab-link inactive px-4 py-2 rounded-full text-sm font-semibold mx-0.5" data-target="slide-3" aria-controls="slide-3" aria-selected="false">Stage 3 · Analysis</button>
+      <button class="tab-link inactive px-4 py-2 rounded-full text-sm font-semibold mx-0.5" data-target="slide-4" aria-controls="slide-4" aria-selected="false">Stage 4 · Capability Map</button>
+    </div>
+  </nav>
+
+  <!-- Slides Container -->
+  <main class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 mt-6 mb-24 space-y-8">
+
+    <!-- Slide 1 -->
+    <section id="slide-1" class="slide active card p-6 md:p-8">
+      <div class="flex flex-col lg:flex-row lg:space-x-8">
+        <div class="lg:w-7/12">
+          <h2 class="text-2xl md:text-3xl font-extrabold brand-yellow mb-2">Stage 1 &mdash; Define the Evaluation Framework</h2>
+          <p class="lead mb-4">We anchor the comparison in IGEL’s Preventative Security Model and Adaptive Secure Desktop, scoring across seven dimensions that matter for secure, flexible endpoint delivery.</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li><span class="font-semibold">Security &amp; Zero Trust:</span> immutable OS, no local data, policy enforcement.</li>
+            <li><span class="font-semibold">Continuity &amp; Recovery:</span> UD Pocket USB boot, Dual Boot, Managed Hypervisor.</li>
+            <li><span class="font-semibold">Delivery Flexibility:</span> VDI/DaaS, PWA, Managed Hypervisor, Enterprise Browser, Local Linux equivalents.</li>
+            <li><span class="font-semibold">Manageability &amp; Integration:</span> UMS, identity, SASE, UEM ecosystem.</li>
+            <li><span class="font-semibold">TCO &amp; Sustainability:</span> lifecycle extension, agentless security, energy &amp; cost savings.</li>
+            <li><span class="font-semibold">Vertical Fit:</span> healthcare, finance, government, retail, manufacturing.</li>
+            <li><span class="font-semibold">Ecosystem &amp; Hardware:</span> IGEL Ready integrations, certified devices.</li>
+          </ul>
+        </div>
+        <div class="lg:w-5/12 mt-6 lg:mt-0">
+          <div class="chart-box p-3">
+            <div id="chart-1" style="height:360px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section id="slide-2" class="slide card p-6 md:p-8">
+      <div class="flex flex-col lg:flex-row lg:space-x-8">
+        <div class="lg:w-7/12">
+          <h2 class="text-2xl md:text-3xl font-extrabold brand-yellow mb-2">Stage 2 &mdash; Multi-Source Intelligence Gathering</h2>
+          <p class="lead mb-4">Balanced evidence from product docs, expert evaluations, case studies, and public roadmaps reduces bias and clarifies true feature equivalence vs. marketing claims.</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li><span class="font-semibold">Official Documentation:</span> feature lists, architecture diagrams, recovery modes.</li>
+            <li><span class="font-semibold">Expert &amp; Lab Evaluations:</span> benchmarks, analyst notes, POV learnings.</li>
+            <li><span class="font-semibold">User Stories:</span> verified vertical deployments &amp; DX outcomes.</li>
+            <li><span class="font-semibold">Roadmaps &amp; PR:</span> release cadence, strategic shifts, integrations.</li>
+          </ul>
+        </div>
+        <div class="lg:w-5/12 mt-6 lg:mt-0">
+          <div class="chart-box p-3">
+            <div id="chart-2" style="height:360px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section id="slide-3" class="slide card p-6 md:p-8">
+      <div class="flex flex-col lg:flex-row lg:space-x-8">
+        <div class="lg:w-7/12">
+          <h2 class="text-2xl md:text-3xl font-extrabold brand-yellow mb-2">Stage 3 &mdash; Weighted Comparative Analysis</h2>
+          <p class="lead mb-4">Scores reflect feature breadth, depth of implementation, integration maturity, and recency of innovation. IGEL is the baseline for capability definitions.</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li><span class="font-semibold">Parity checks</span> require technical equivalence (not just naming).</li>
+            <li><span class="font-semibold">Continuity modes</span> (Dual Boot, UD Pocket, Managed Hypervisor) are evaluated for time-to-recover.</li>
+            <li><span class="font-semibold">Ecosystem breadth</span> and certified hardware weigh strongly for scale.</li>
+            <li><span class="font-semibold">Zero-trust posture</span> considers immutability, no local data, and policy control.</li>
+          </ul>
+        </div>
+        <div class="lg:w-5/12 mt-6 lg:mt-0">
+          <div class="chart-box p-3">
+            <div id="chart-3" style="height:380px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section id="slide-4" class="slide card p-6 md:p-8">
+      <div class="flex flex-col lg:flex-row lg:space-x-8">
+        <div class="lg:w-7/12">
+          <h2 class="text-2xl md:text-3xl font-extrabold brand-yellow mb-2">Stage 4 &mdash; Competitive Capability Map</h2>
+          <p class="lead mb-4">A side-by-side matrix highlights IGEL advantages (green), parity (yellow), and gaps (red), with vertical accents indicating where each capability is most impactful.</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li><span class="font-semibold">Differentiators:</span> Preventative Security Model; layered recovery without external DR tools.</li>
+            <li><span class="font-semibold">Watchlist:</span> areas Unicon promotes (e.g., direct Citrix bundling) for ongoing monitoring.</li>
+            <li><span class="font-semibold">Implications:</span> refine positioning, partner motions, and vertical plays.</li>
+          </ul>
+        </div>
+        <div class="lg:w-5/12 mt-6 lg:mt-0">
+          <div class="chart-box p-3">
+            <div id="chart-4" style="height:380px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prev / Next controls -->
+      <div class="mt-8 flex items-center justify-between">
+        <button id="prevBtn" class="btn-ghost rounded-full px-4 py-2 font-semibold">&larr; Previous</button>
+        <button id="nextBtn" class="btn-igel rounded-full px-4 py-2 font-bold">Next &rarr;</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-yellow-600 bg-black bg-opacity-30">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6 text-xs leading-relaxed text-gray-200">
+      Preventative Security Model<sup>TM</sup> and Preventative Security Architecture<sup>TM</sup> are registered trademarks of IGEL Technology GmbH. 
+      All hardware and software names are registered trademarks of the respective manufacturers. Errors and omissions excepted. Subject to change without notice. © 082025
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      // ----- Slide / Tab Logic -----
+      const tabs = Array.from(document.querySelectorAll('.tab-link'));
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const idToIndex = {};
+      slides.forEach((s, i)=> idToIndex[s.id] = i);
+      let current = 0;
+
+      function showSlide(index){
+        current = Math.max(0, Math.min(slides.length-1, index));
+        slides.forEach((s,i)=> s.classList.toggle('active', i===current));
+        tabs.forEach((t,i)=>{
+          const active = i===current;
+          t.classList.toggle('inactive', !active);
+          t.setAttribute('aria-selected', active ? 'true':'false');
+        });
+      }
+
+      tabs.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          showSlide(idToIndex[btn.dataset.target]);
+        });
+      });
+
+      document.getElementById('prevBtn')?.addEventListener('click', ()=>showSlide(current-1));
+      document.getElementById('nextBtn')?.addEventListener('click', ()=>showSlide(current+1));
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e)=>{
+        if(e.key==='ArrowRight') showSlide(current+1);
+        if(e.key==='ArrowLeft')  showSlide(current-1);
+      });
+
+      // Ensure initial slide visible
+      showSlide(0);
+
+      // ----- Plotly Theme -----
+      const baseLayout = {
+        paper_bgcolor: '#141414',
+        plot_bgcolor: '#141414',
+        font: {family: 'Manrope, Arial, sans-serif', color: '#EAEAEA'},
+        margin: {l:40,r:20,t:40,b:40},
+        legend: {orientation:'h', x:0, y:1.15, font:{color:'#EAEAEA'}},
+        xaxis: {gridcolor:'#2b2b2b', zerolinecolor:'#2b2b2b', linecolor:'#555', tickfont:{color:'#CFCFCF'}, titlefont:{color:'#EAEAEA'}},
+        yaxis: {gridcolor:'#2b2b2b', zerolinecolor:'#2b2b2b', linecolor:'#555', tickfont:{color:'#CFCFCF'}, titlefont:{color:'#EAEAEA'}},
+      };
+
+      // ----- Slide 1: Capability Weights (bar) -----
+      const dims = ['Security','Continuity','Delivery','Manageability','TCO','Vertical Fit','Ecosystem'];
+      const weights = [24,18,16,14,10,8,10]; // example normalized importance scores (sum=100)
+      Plotly.newPlot('chart-1', [{
+        x: dims,
+        y: weights,
+        type: 'bar',
+        marker: {
+          color: ['#FFD101','#FFD101','#FFD101','#FFD101','#FFD101','#FFD101','#FFD101'],
+          line: {color:'#111', width:1}
+        },
+        hovertemplate:'<b>%{x}</b>: %{y}%<extra></extra>'
+      }], Object.assign({}, baseLayout, {
+        title: {text:'Evaluation Dimension Weights', font:{color:'#FFD101', size:16}},
+        yaxis: {title:'Weight (%)', gridcolor:'#2b2b2b', tickformat:',d'},
+      }), {displayModeBar:false, responsive:true});
+
+      // ----- Slide 2: Source Mix (donut) -----
+      const labels2 = ['Official Docs','Expert/Lab','User Stories','Roadmaps/PR'];
+      const values2 = [35,25,25,15];
+      Plotly.newPlot('chart-2', [{
+        type:'pie',
+        labels:labels2,
+        values:values2,
+        hole:.45,
+        marker:{colors:['#FFD101','#004D68','#770469','#001C99']},
+        textinfo:'label+percent',
+        insidetextfont:{color:'#fff'},
+        hovertemplate:'%{label}: %{percent}<extra></extra>'
+      }], Object.assign({}, baseLayout, {
+        title:{text:'Intelligence Gathering Mix', font:{color:'#FFD101', size:16}},
+        showlegend:true
+      }), {displayModeBar:false, responsive:true});
+
+      // ----- Slide 3: Radar (IGEL vs Unicon) -----
+      const radarDims = ['Security','Continuity','Delivery','Manageability','TCO','Vertical Fit','Ecosystem'];
+      const igel =   [5,5,5,4,4,4,5]; // illustrative 1–5
+      const unicon = [3,2,3,3,4,3,3];
+      function radarToXY(vals){
+        const theta = vals.map((_,i)=> i*2*Math.PI/vals.length);
+        return {
+          r: vals.concat(vals[0]),
+          t: theta.map(a=>a*180/Math.PI).concat(0)
+        };
+      }
+      const igelR = radarToXY(igel), uniR = radarToXY(unicon);
+      Plotly.newPlot('chart-3', [
+        {
+          type:'scatterpolar',
+          r: igelR.r, theta: igelR.t, fill:'toself',
+          name:'IGEL', fillcolor:'rgba(255,209,1,0.35)', line:{color:'#FFD101', width:2},
+          hovertemplate:'IGEL %{theta}: %{r}<extra></extra>'
+        },
+        {
+          type:'scatterpolar',
+          r: uniR.r, theta: uniR.t, fill:'toself',
+          name:'Unicon', fillcolor:'rgba(119,4,105,0.28)', line:{color:'#770469', width:2},
+          hovertemplate:'Unicon %{theta}: %{r}<extra></extra>'
+        }
+      ], {
+        ...baseLayout,
+        title:{text:'Weighted Comparative Scores (1–5)', font:{color:'#FFD101', size:16}},
+        polar:{
+          bgcolor:'#141414',
+          gridcolor:'#2b2b2b',
+          radialaxis:{visible:true, range:[0,5], tickfont:{color:'#CFCFCF'}, showline:true, linecolor:'#555'},
+          angularaxis:{tickmode:'array', tickvals:[0,360/radarDims.length,2*360/radarDims.length,3*360/radarDims.length,4*360/radarDims.length,5*360/radarDims.length,6*360/radarDims.length], ticktext:radarDims, tickfont:{color:'#EAEAEA'}}
+        },
+        legend:{x:0, y:1.15, orientation:'h'}
+      }, {displayModeBar:false, responsive:true});
+
+      // ----- Slide 4: Capability Matrix (heatmap) -----
+      //  1=Gap (red), 2=Parity (yellow), 3=IGEL Advantage (green)
+      const rows = ['Security','Continuity','Delivery','Manageability','TCO','Vertical','Ecosystem'];
+      const cols = ['IGEL vs Unicon'];
+      const matrix = [[3],[3],[3],[2],[2],[3],[3]];
+      const colors = [
+        [0, '#7F1D1D'],   // deep red
+        [0.33, '#7F1D1D'],
+        [0.34, '#FFD101'],// parity yellow
+        [0.66, '#FFD101'],
+        [0.67, '#1F6F3F'],// advantage green
+        [1, '#1F6F3F']
+      ];
+      Plotly.newPlot('chart-4', [{
+        z: matrix,
+        x: cols,
+        y: rows,
+        type:'heatmap',
+        colorscale: colors,
+        showscale:false,
+        hovertemplate:'<b>%{y}</b>: %{z==1?"Gap":(z==2?"Parity":"IGEL Advantage")}<extra></extra>',
+      }], Object.assign({}, baseLayout, {
+        title:{text:'Side-by-Side Feature Matrix', font:{color:'#FFD101', size:16}},
+        xaxis:{showgrid:false, tickfont:{color:'#EAEAEA'}},
+        yaxis:{autorange:'reversed', tickfont:{color:'#EAEAEA'}}
+      }), {displayModeBar:false, responsive:true});
+
+      // Resize handler to keep charts crisp
+      window.addEventListener('resize', ()=>{
+        ['chart-1','chart-2','chart-3','chart-4'].forEach(id=>Plotly.Plots.resize(id));
+      });
+    })();
+  </script>
+</body>
+</html>
