@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>IGEL | Preventative Security Platform – Field Deck</title>
+
+  <!-- Preconnects for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Manrope Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS (production, minified) -->
+  <link id="tw" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.10/dist/tailwind.min.css" integrity="" crossorigin="anonymous"
+        onerror="document.documentElement.classList.add('no-tailwind')">
+
+  <!-- Plotly (latest) -->
+  <script defer id="plotly" src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#141414;
+      --text:#EAEAEA;
+      --text-sub:#B3B3B3;
+      --muted:#2A2A2A;
+      --ring:#FFD101;
+      --brand:#FFD101;
+      --teal:#004D68;
+      --plum:#770469;
+      --blue:#001C99;
+      --purple:#4500A6;
+      --grey:#43433D;
+      --radius:16px;
+      --shadow:0 10px 30px rgba(0,0,0,.45);
+    }
+    html,body{background:var(--bg); color:var(--text); font-family:Manrope, Arial, sans-serif;}
+    /* If Tailwind fails, provide minimal layout so deck remains usable */
+    .no-tailwind .tw-hidden{display:none}
+    .no-tailwind .tw-flex{display:flex}
+    .no-tailwind .tw-grid{display:grid}
+    .no-tailwind .tw-gap{gap:1rem}
+    .no-tailwind .tw-container{max-width:1200px; margin:0 auto; padding:1rem}
+    .focus-visible:focus-visible{outline:3px solid var(--ring); outline-offset:2px; border-radius:8px}
+    .tab-btn[aria-selected="true"]{color:var(--brand); font-weight:800; border-bottom:3px solid var(--brand)}
+    .tab-btn[aria-selected="false"]{color:#E6E6E6}
+    .tab-btn:hover{color:var(--brand)}
+    .elevate{backdrop-filter:saturate(160%) blur(6px); background:rgba(20,20,20,.7); box-shadow:var(--shadow)}
+    .card{border:1px solid var(--muted); border-radius:var(--radius); background:rgba(255,255,255,.02)}
+    .h1{font-size:clamp(1.6rem,2.6vw,2.2rem); color:var(--brand); font-weight:800; line-height:1.15}
+    .p{color:var(--text); opacity:.95; font-size:1rem; line-height:1.65}
+    .ul{color:var(--text-sub)}
+    .footer{color:#DADADA; font-size:.78rem; line-height:1.35; border-top:1px solid var(--muted)}
+    .nav-scroll{scrollbar-width:thin; scrollbar-color:var(--brand) transparent}
+    .nav-scroll::-webkit-scrollbar{height:6px}
+    .nav-scroll::-webkit-scrollbar-thumb{background:var(--muted); border-radius:999px}
+    .logo{height:40px}
+    @media (max-width:640px){ .logo{height:36px} }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="w-full sticky top-0 z-40 elevate">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <div class="flex items-center gap-3">
+          <img class="logo" src="https://github.com/Broadwood11/images/blob/main/IGEL_logo_yellow.png?raw=true" alt="IGEL logo" />
+          <div class="hidden sm:block h-10 w-px bg-[color:var(--muted)]"></div>
+          <h1 class="text-[color:var(--brand)] font-extrabold text-xl sm:text-2xl">Preventative Security Platform – Field Deck</h1>
+        </div>
+        <div class="sm:hidden w-full pt-2">
+          <h1 class="text-[color:var(--brand)] font-extrabold text-lg">Preventative Security Platform – Field Deck</h1>
+        </div>
+      </div>
+    </div>
+    <!-- Tabs -->
+    <nav class="w-full border-t border-[color:var(--muted)]">
+      <div class="max-w-7xl mx-auto px-2 sm:px-6">
+        <div id="tablist" role="tablist" aria-label="Slides" class="flex justify-center gap-2 overflow-x-auto nav-scroll py-2">
+          <button class="tab-btn px-4 py-2 rounded-md focus-visible outline-none" role="tab" aria-selected="true" aria-controls="slide-1" id="tab-1" tabindex="0">1 · Preventative Security</button>
+          <button class="tab-btn px-4 py-2 rounded-md focus-visible outline-none" role="tab" aria-selected="false" aria-controls="slide-2" id="tab-2" tabindex="-1">2 · Continuity & Recovery</button>
+          <button class="tab-btn px-4 py-2 rounded-md focus-visible outline-none" role="tab" aria-selected="false" aria-controls="slide-3" id="tab-3" tabindex="-1">3 · Delivery Flexibility</button>
+          <button class="tab-btn px-4 py-2 rounded-md focus-visible outline-none" role="tab" aria-selected="false" aria-controls="slide-4" id="tab-4" tabindex="-1">4 · Manageability & TCO</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Slides -->
+  <main class="flex-1">
+    <section id="slide-1" role="tabpanel" aria-labelledby="tab-1" tabindex="0" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div class="card p-6">
+          <h2 class="h1 mb-4">Preventative Security Model</h2>
+          <p class="p mb-4">
+            IGEL’s Preventative Security Model centers on isolation, least functionality, and a locked-down, read-only operating system. By removing local data and minimizing the attack surface, endpoints become a hardened conduit to SaaS, DaaS, and VDI resources. Policy-driven access with strong identity ensures the right user, device, and context before any session begins. This approach reduces patching urgency, streamlines audits, and improves resilience against ransomware and supply-chain risk. With a modular, verifiable OS image and an ecosystem of certified integrations, organizations can align to zero-trust principles while maintaining a consistent user experience across locations and device types—without the overhead of traditional endpoint stacks.
+          </p>
+          <ul class="ul list-disc pl-5 space-y-2">
+            <li>Immutable, read-only OS with Secure Boot</li>
+            <li>No local data; SaaS/DaaS/VDI first access</li>
+            <li>Policy enforcement & identity-aware launch</li>
+            <li>Attack surface minimized; fewer agents</li>
+            <li>IGEL Ready integrations for layered controls</li>
+          </ul>
+        </div>
+        <div class="card p-4">
+          <div id="chart-1" class="w-full h-[320px] sm:h-[380px] lg:h-[460px]"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-2" role="tabpanel" aria-labelledby="tab-2" tabindex="0" hidden class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div class="card p-6">
+          <h2 class="h1 mb-4">Continuity & Recovery</h2>
+          <p class="p mb-4">
+            When the unexpected happens, business continuity depends on clean-boot options that bypass compromised systems and restore productive access fast. IGEL provides layered recovery modes including USB boot (UD Pocket), Dual Boot, and a Managed Hypervisor option for local containerized workspaces. These modes enable secure reconnection to essential services—communications, EHR/EMR, trading platforms, or critical line-of-business apps—without data persistence on the device. Centralized policies ensure only validated users and devices launch sessions, while UMS can re-provision or rotate images at scale. The result is a predictable, low-risk path to recovery that keeps operations running and reduces incident costs.
+          </p>
+          <ul class="ul list-disc pl-5 space-y-2">
+            <li>UD Pocket: clean boot on any compatible x86-64</li>
+            <li>Dual Boot: protected IGEL partition alongside OS</li>
+            <li>Managed Hypervisor: local, policy-controlled VM</li>
+            <li>Rapid reconnect to core apps and comms</li>
+            <li>Central orchestration through UMS</li>
+          </ul>
+        </div>
+        <div class="card p-4">
+          <div id="chart-2" class="w-full h-[320px] sm:h-[380px] lg:h-[460px]"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-3" role="tabpanel" aria-labelledby="tab-3" tabindex="0" hidden class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div class="card p-6">
+          <h2 class="h1 mb-4">Delivery Flexibility</h2>
+          <p class="p mb-4">
+            Modern work mixes delivery methods: full VDI/DaaS desktops, secure enterprise browsers, progressive web apps, and selected local Linux equivalents for offline or edge use. IGEL’s Adaptive Secure Desktop orchestrates these choices behind a consistent launch experience. Admins assemble role-based workspaces that route users to the optimal delivery path based on identity, posture, location, and risk. The result is fewer images to maintain, lower bandwidth demands, and faster onboarding across devices from OEM partners. Users gain a reliable, low-latency path into their apps with minimal learning curve—whether they’re clinicians on shared workstations, advisors in branches, or agents in contact centers.
+          </p>
+          <ul class="ul list-disc pl-5 space-y-2">
+            <li>VDI/DaaS, PWA, Enterprise Browser, Local Linux apps</li>
+            <li>Context-aware routing and policy selection</li>
+            <li>Reduced image & agent sprawl</li>
+            <li>Consistent UX across certified devices</li>
+            <li>Great fit for healthcare, finance, retail, and public sector</li>
+          </ul>
+        </div>
+        <div class="card p-4">
+          <div id="chart-3" class="w-full h-[320px] sm:h-[380px] lg:h-[460px]"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="slide-4" role="tabpanel" aria-labelledby="tab-4" tabindex="0" hidden class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div class="card p-6">
+          <h2 class="h1 mb-4">Manageability & TCO</h2>
+          <p class="p mb-4">
+            Universal Management Suite (UMS) gives IT precise, at-scale control of endpoints—from golden image governance to context-based policy, firmware updates, and app entitlements. Lifecycle-extending repurpose use cases and agentless security reduce support effort and license overhead, while remote troubleshooting tools accelerate resolution. Sustainability goals benefit from longer device life and lower power profiles. Ecosystem integrations simplify identity, SASE, and observability, ensuring signals flow to the systems teams already use. Together these advantages drive a lower, more predictable total cost of ownership without compromising security or the end-user experience.
+          </p>
+          <ul class="ul list-disc pl-5 space-y-2">
+            <li>Granular policy & profile control via UMS</li>
+            <li>Repurpose hardware to cut refresh costs</li>
+            <li>Agentless model reduces complexity</li>
+            <li>Energy & carbon savings from efficient endpoints</li>
+            <li>Broad ecosystem & OEM partnerships</li>
+          </ul>
+        </div>
+        <div class="card p-4">
+          <div id="chart-4" class="w-full h-[320px] sm:h-[380px] lg:h-[460px]"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer w-full px-4 sm:px-6 lg:px-8 py-4 mt-6">
+    <div class="max-w-7xl mx-auto">
+      Preventative Security ModelTM and Preventative Security ArchitectureTM are registered trademarks of IGEL Technology GmbH. All hardware and software names are registered trademarks of the respective manufacturers. Errors and omissions excepted. Subject to change without notice. © 082025
+    </div>
+  </footer>
+
+  <script>
+  (function(){
+    const Theme = {
+      colors: {
+        bg:"#141414", text:"#EAEAEA", sub:"#B3B3B3", grid:"#2A2A2A", zero:"#3A3A3A",
+        brand:"#FFD101", teal:"#004D68", plum:"#770469", blue:"#001C99", purple:"#4500A6", grey:"#43433D"
+      },
+      colorway:["#FFD101","#4CC9F0","#F72585","#3A86FF","#B5179E","#00D1B2","#E76F51","#A8DADC","#F1FA8C"],
+      font:"Manrope, Arial, sans-serif"
+    };
+
+    // Utilities
+    function qs(sel, root=document){ return root.querySelector(sel); }
+    function qsa(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
+
+    // Accessibility: manage tabs
+    const tabs = qsa('[role="tab"]');
+    const panels = qsa('[role="tabpanel"]');
+
+    function setActive(index, focusPanel=false){
+      tabs.forEach((t,i)=>{
+        const selected = i === index;
+        t.setAttribute('aria-selected', String(selected));
+        t.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((p,i)=>{
+        const show = i === index;
+        p.hidden = !show;
+      });
+      // Resize charts when switching
+      if (window.Plotly && typeof Plotly.Plots?.resize === 'function'){
+        // delay to ensure layout settled
+        setTimeout(()=>{ qsa('[id^="chart-"]').forEach(c => Plotly.Plots.resize(c)); }, 50);
+      }
+      if (focusPanel) panels[index].focus({preventScroll:false});
+    }
+
+    tabs.forEach((tab, idx)=>{
+      tab.addEventListener('click', ()=> setActive(idx,true));
+      tab.addEventListener('keydown', (e)=>{
+        const key = e.key;
+        let newIdx = idx;
+        if (key === 'ArrowRight'){ newIdx = (idx+1)%tabs.length; tabs[newIdx].focus(); e.preventDefault();}
+        if (key === 'ArrowLeft'){ newIdx = (idx-1+tabs.length)%tabs.length; tabs[newIdx].focus(); e.preventDefault();}
+        if (key === 'Home'){ newIdx = 0; tabs[newIdx].focus(); e.preventDefault();}
+        if (key === 'End'){ newIdx = tabs.length-1; tabs[newIdx].focus(); e.preventDefault();}
+        if (key === 'Enter' || key === ' '){ setActive(newIdx,true); e.preventDefault();}
+      });
+    });
+
+    // Chart rendering with dark defaults & safety
+    function renderChart(containerId, chart){
+      const el = qs('#'+containerId);
+      if(!el){ return; }
+
+      if(!window.Plotly){
+        el.innerHTML =
+          '<div class="text-center text-sm text-[color:var(--text-sub)] p-6">Chart library failed to load. Please check your connection and reload.</div>';
+        return;
+      }
+
+      const data = Array.isArray(chart?.data) && chart.data.length ? chart.data : [{
+        type:'indicator', mode:'number', value:0, title:{text:'No data'}
+      }];
+
+      const layout = Object.assign({
+        paper_bgcolor: Theme.colors.bg,
+        plot_bgcolor: Theme.colors.bg,
+        font: {family: Theme.font, color: Theme.colors.text},
+        title: {text: chart?.title || '', font:{color: Theme.colors.brand, size:18}},
+        margin:{t:40,r:20,b:40,l:50},
+        xaxis:{gridcolor:Theme.colors.grid, zerolinecolor:Theme.colors.zero, tickfont:{color:Theme.colors.text}},
+        yaxis:{gridcolor:Theme.colors.grid, zerolinecolor:Theme.colors.zero, tickfont:{color:Theme.colors.text}},
+        colorway: Theme.colorway,
+        showlegend: chart?.showlegend ?? true,
+      }, chart?.layout || {});
+
+      const config = Object.assign({
+        responsive:true,
+        displaylogo:false,
+        modeBarButtonsToRemove:["lasso2d","select2d"]
+      }, chart?.config || {});
+
+      Plotly.newPlot(el, data, layout, config).then(() => {
+        // ensure reflow
+        Plotly.Plots.resize(el);
+      }).catch(()=>{
+        el.innerHTML =
+          '<div class="text-center text-sm text-[color:var(--text-sub)] p-6">Unable to render chart.</div>';
+      });
+    }
+
+    // Example charts per slide
+    function initCharts(){
+      // Slide 1: Risk reduction vs. traditional stack
+      renderChart('chart-1', {
+        title:'Attack Surface Reduction (Illustrative)',
+        data:[
+          {type:'bar', name:'Traditional Stack', x:['Identity','Apps','OS','Data'], y:[60,55,70,65]},
+          {type:'bar', name:'IGEL Preventative', x:['Identity','Apps','OS','Data'], y:[30,28,10,0]}
+        ],
+        layout:{barmode:'group', yaxis:{title:'Relative Exposure (↓ better)'}}
+      });
+
+      // Slide 2: Recovery time comparisons
+      renderChart('chart-2', {
+        title:'Time to Productive Access (Minutes)',
+        data:[
+          {type:'scatter', mode:'lines+markers', name:'Reimage Endpoint', x:[0,1,2,3,4,5], y:[240,220,210,205,200,195]},
+          {type:'scatter', mode:'lines+markers', name:'Dual Boot', x:[0,1,2,3,4,5], y:[40,35,32,30,28,27]},
+          {type:'scatter', mode:'lines+markers', name:'UD Pocket', x:[0,1,2,3,4,5], y:[15,14,13,12,12,11]}
+        ],
+        layout:{xaxis:{title:'Drills/Iterations'}, yaxis:{title:'Minutes'}}
+      });
+
+      // Slide 3: Delivery mix
+      renderChart('chart-3', {
+        title:'Workspace Delivery Mix',
+        data:[{
+          type:'pie',
+          labels:['VDI/DaaS','Enterprise Browser','PWA','Local Linux app'],
+          values:[45,25,20,10],
+          hole:0.35
+        }],
+        layout:{showlegend:true}
+      });
+
+      // Slide 4: TCO components
+      renderChart('chart-4', {
+        title:'3-Year TCO Components (Illustrative, %)',
+        data:[
+          {type:'bar', name:'Traditional', x:['Licenses','Ops','Refresh HW','Security Agents','Energy'], y:[28,32,25,10,5]},
+          {type:'bar', name:'IGEL', x:['Licenses','Ops','Refresh HW','Security Agents','Energy'], y:[20,24,12,6,3]}
+        ],
+        layout:{barmode:'group', yaxis:{title:'Percent of Total'}}
+      });
+    }
+
+    // Responsive resizes
+    ['resize','orientationchange'].forEach(ev=>{
+      window.addEventListener(ev, ()=>{
+        if (window.Plotly && typeof Plotly.Plots?.resize === 'function'){
+          qsa('[id^="chart-"]').forEach(c => Plotly.Plots.resize(c));
+        }
+      }, {passive:true});
+    });
+
+    // Startup
+    document.addEventListener('DOMContentLoaded', () =>{
+      // Tailwind fallback notice if CSS failed
+      if (document.documentElement.classList.contains('no-tailwind')) {
+        console.warn('Tailwind CSS failed to load. Using minimal fallback styles.');
+      }
+
+      // Ensure first slide visible
+      setActive(0,false);
+
+      // If Plotly already available (cached), init immediately; else wait for load
+      if (window.Plotly) { initCharts(); }
+      else {
+        const p = qs('#plotly');
+        if (p) p.addEventListener('load', initCharts, {once:true});
+        // If CDN fails, show messages
+        if (p) p.addEventListener('error', ()=>{
+          qsa('[id^="chart-"]').forEach(el=>{
+            el.innerHTML = '<div class="text-center text-sm text-[color:var(--text-sub)] p-6">Plotly CDN unavailable. Charts require connectivity to load.</div>';
+          });
+        }, {once:true});
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
