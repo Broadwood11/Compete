@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>IGEL • Interactive Case Study Charts</title>
+  <!-- Google Fonts: Manrope -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Plotly CDN (latest) -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    :root{
+      --igel-black:#141414;
+      --igel-yellow:#FFD101;
+      --igel-teal:#004D68;
+      --igel-plum:#770469;
+      --igel-blue:#001C99;
+      --igel-purple:#4500A6;
+      --igel-grey:#43433D;
+      --text:#EDEDED;
+      --sub:#B3B3B3;
+      --border:#2A2A2A;
+    }
+    html,body{height:100%;background:var(--igel-black);color:var(--text);font-family:'Manrope',Arial,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",sans-serif}
+    .deck{max-width:1200px;margin:0 auto}
+    .tab{border:1px solid var(--border);background:#0e0e0e}
+    .tab[hidden]{display:none}
+    .nav-btn{transition:all .2s ease}
+    .nav-btn[aria-selected="true"]{background:var(--igel-yellow);color:#111}
+    .nav-btn:focus-visible{outline:2px solid var(--igel-yellow);outline-offset:3px;border-radius:9999px}
+    .card{border:1px solid var(--border);background:#0e0e0e}
+    .plot{width:100%;height:64vh}
+    .badge{background:var(--igel-grey);color:#fff}
+  </style>
+</head>
+<body>
+  <header class="deck px-4 sm:px-6 pt-6 pb-4">
+    <div class="flex flex-col gap-4 items-center">
+      <div class="flex items-center gap-3">
+        <img src="https://github.com/Broadwood11/images/blob/main/IGEL_logo_yellow.png?raw=true" alt="IGEL" class="h-9 w-auto"/>
+        <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-[color:var(--igel-yellow)]">Interactive Customer Reference Vault • Charts</h1>
+      </div>
+      <nav aria-label="Slides" class="w-full flex justify-center">
+        <div role="tablist" aria-label="IGEL Charts" class="flex flex-wrap gap-2 justify-center">
+          <button class="nav-btn px-3 py-1.5 rounded-full text-sm font-semibold" role="tab" aria-selected="true" aria-controls="tab-1" id="tabbtn-1">1 • Verticals %</button>
+          <button class="nav-btn px-3 py-1.5 rounded-full text-sm font-semibold" role="tab" aria-selected="false" aria-controls="tab-2" id="tabbtn-2">2 • Verticals #</button>
+          <button class="nav-btn px-3 py-1.5 rounded-full text-sm font-semibold" role="tab" aria-selected="false" aria-controls="tab-3" id="tabbtn-3">3 • Per Year</button>
+          <button class="nav-btn px-3 py-1.5 rounded-full text-sm font-semibold" role="tab" aria-selected="false" aria-controls="tab-4" id="tabbtn-4">4 • Use Cases</button>
+          <button class="nav-btn px-3 py-1.5 rounded-full text-sm font-semibold" role="tab" aria-selected="false" aria-controls="tab-5" id="tabbtn-5">5 • Asset Types</button>
+          <button class="nav-btn px-3 py-1.5 rounded-full text-sm font-semibold" role="tab" aria-selected="false" aria-controls="tab-6" id="tabbtn-6">6 • Region/Country</button>
+          <button class="nav-btn px-3 py-1.5 rounded-full text-sm font-semibold" role="tab" aria-selected="false" aria-controls="tab-7" id="tabbtn-7">7 • Challenges</button>
+          <button class="nav-btn px-3 py-1.5 rounded-full text-sm font-semibold" role="tab" aria-selected="false" aria-controls="tab-8" id="tabbtn-8">8 • Adoption Over Time</button>
+        </div>
+      </nav>
+      <p class="text-xs text-[color:var(--sub)]">Tip: Use <span class="badge px-1.5 py-0.5 rounded">←</span>/<span class="badge px-1.5 py-0.5 rounded">→</span> arrows or keys <span class="badge px-1 py-0.5 rounded">1–8</span> to switch slides.</p>
+    </div>
+  </header>
+
+  <main class="deck px-4 sm:px-6 pb-12">
+    <!-- Slide 1 -->
+    <section id="tab-1" class="tab rounded-2xl p-4 sm:p-6" role="tabpanel" aria-labelledby="tabbtn-1">
+      <h2 class="text-lg sm:text-xl font-bold mb-2 text-[color:var(--igel-yellow)]">Graph 1: Vertical Distribution (Percent)</h2>
+      <div id="pie-verticals" class="plot"></div>
+    </section>
+
+    <!-- Slide 2 -->
+    <section id="tab-2" class="tab rounded-2xl p-4 sm:p-6" role="tabpanel" aria-labelledby="tabbtn-2" hidden>
+      <h2 class="text-lg sm:text-xl font-bold mb-2 text-[color:var(--igel-yellow)]">Graph 2: Verticals by Count</h2>
+      <div id="bar-verticals" class="plot"></div>
+    </section>
+
+    <!-- Slide 3 -->
+    <section id="tab-3" class="tab rounded-2xl p-4 sm:p-6" role="tabpanel" aria-labelledby="tabbtn-3" hidden>
+      <h2 class="text-lg sm:text-xl font-bold mb-2 text-[color:var(--igel-yellow)]">Graph 3: Case Studies per Year</h2>
+      <div id="timeline-year" class="plot"></div>
+    </section>
+
+    <!-- Slide 4 -->
+    <section id="tab-4" class="tab rounded-2xl p-4 sm:p-6" role="tabpanel" aria-labelledby="tabbtn-4" hidden>
+      <h2 class="text-lg sm:text-xl font-bold mb-2 text-[color:var(--igel-yellow)]">Graph 4: IGEL Use Cases (Count)</h2>
+      <div id="bar-usecases" class="plot"></div>
+    </section>
+
+    <!-- Slide 5 -->
+    <section id="tab-5" class="tab rounded-2xl p-4 sm:p-6" role="tabpanel" aria-labelledby="tabbtn-5" hidden>
+      <h2 class="text-lg sm:text-xl font-bold mb-2 text-[color:var(--igel-yellow)]">Graph 5: Asset Type Distribution</h2>
+      <div id="pie-assettype" class="plot"></div>
+    </section>
+
+    <!-- Slide 6 -->
+    <section id="tab-6" class="tab rounded-2xl p-4 sm:p-6" role="tabpanel" aria-labelledby="tabbtn-6" hidden>
+      <h2 class="text-lg sm:text-xl font-bold mb-2 text-[color:var(--igel-yellow)]">Graph 6: Region → Country</h2>
+      <div id="sunburst-region" class="plot"></div>
+    </section>
+
+    <!-- Slide 7 -->
+    <section id="tab-7" class="tab rounded-2xl p-4 sm:p-6" role="tabpanel" aria-labelledby="tabbtn-7" hidden>
+      <h2 class="text-lg sm:text-xl font-bold mb-2 text-[color:var(--igel-yellow)]">Graph 7: Main Challenge (Top Keywords)</h2>
+      <div id="bar-challenges" class="plot"></div>
+    </section>
+
+    <!-- Slide 8 -->
+    <section id="tab-8" class="tab rounded-2xl p-4 sm:p-6" role="tabpanel" aria-labelledby="tabbtn-8" hidden>
+      <h2 class="text-lg sm:text-xl font-bold mb-2 text-[color:var(--igel-yellow)]">Graph 8: Vertical Adoption Over Time</h2>
+      <div id="area-verticals-year" class="plot"></div>
+    </section>
+  </main>
+
+  <!-- Inline dataset (subset from IGEL case studies) -->
+  <script>
+  const CASES = [
+    {company_name:"COCC", vertical:["Financial Services"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","Remote Work","User Experience","Windows 11 Migration","TCO / Cost Reduction","Business Continuity / Disaster Recovery"], country:"United States", date_of_publication:"2023-07-26", main_challenge:"Limited IT budgets and resources, evolving cybersecurity threats, remote and hybrid work while transitioning to Windows 11."},
+    {company_name:"COIN Availability Services", vertical:["Other"], asset_type:["Web Page","PDF","Video"], igel_use_cases:["Business Continuity / Disaster Recovery"], country:"Netherlands", date_of_publication:"2025-04-01", main_challenge:"Provide immediate operational readiness for disaster recovery workspaces, ensure flexibility, security, and cost-efficiency."},
+    {company_name:"Mobility Services", vertical:["Other"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","Remote Work","User Experience","Business Continuity / Disaster Recovery","TCO / Cost Reduction"], country:null, date_of_publication:"2025-04-01", main_challenge:"Difficult to manage Citrix-based environment, WFH errors, call quality issues, heterogeneous devices and requirements."},
+    {company_name:"Undisclosed Defense Contractor", vertical:["Government"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","User Experience","Windows 11 Migration","TCO / Cost Reduction"], country:"United States", date_of_publication:"2024-10-10", main_challenge:"Previous unsuccessful VDI migrations; need seamless collaboration and customizable desktop images by role."},
+    {company_name:"Gloucestershire Hospitals NHS", vertical:["Healthcare"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","User Experience","Business Continuity / Disaster Recovery","TCO / Cost Reduction"], country:"United Kingdom", date_of_publication:"2025-03-01", main_challenge:"Lengthy and complex clinician logins causing inefficiencies and security concerns."},
+    {company_name:"Florence Bank", vertical:["Financial Services"], asset_type:["Web Page","PDF","Video"], igel_use_cases:["Preventative Security Model","User Experience","Windows 11 Migration","TCO / Cost Reduction"], country:"United States", date_of_publication:"2024-12-17", main_challenge:"Aging desktops; transition to VDI while upgrading OS with stronger Zero Trust and simplified management."},
+    {company_name:"Connecticut Orthopaedics", vertical:["Healthcare"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","User Experience","Business Continuity / Disaster Recovery","TCO / Cost Reduction"], country:"United States", date_of_publication:"2024-06-01", main_challenge:"Managing security and deployment of Windows endpoints with Zero Trust and devices outside secure networks."},
+    {company_name:"Heidenreich", vertical:["Manufacturing"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","User Experience","TCO / Cost Reduction"], country:"Norway", date_of_publication:"2024-05-01", main_challenge:"Mixed old/new hardware, visibility and control challenges, high Citrix upgrade costs."},
+    {company_name:"Nyköping Municipality", vertical:["Government"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","User Experience","Sustainability","TCO / Cost Reduction"], country:"Sweden", date_of_publication:"2023-09-01", main_challenge:"Secure public computers in libraries with GDPR compliance, repurpose aging hardware."},
+    {company_name:"Western Health", vertical:["Healthcare"], asset_type:["Web Page","PDF"], igel_use_cases:["User Experience","TCO / Cost Reduction","Sustainability"], country:"Australia", date_of_publication:"2023-10-05", main_challenge:"Manage large Windows fleet across multiple sites; reduce support cost and improve UX."},
+    {company_name:"Municipality of Leudal", vertical:["Government"], asset_type:["Web Page","PDF"], igel_use_cases:["User Experience","TCO / Cost Reduction","Sustainability"], country:"Netherlands", date_of_publication:"2023-11-01", main_challenge:"High costs and complexity of Windows endpoints; need simpler management and better UX."},
+    {company_name:"Asahi Kasei", vertical:["Manufacturing"], asset_type:["Web Page","PDF"], igel_use_cases:["TCO / Cost Reduction","Sustainability","Preventative Security Model"], country:"Japan", date_of_publication:"2023-11-01", main_challenge:"Decentralized thin client management across global sites; outdated OS and security risks."},
+    {company_name:"Michigan Health System", vertical:["Healthcare"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","User Experience","TCO / Cost Reduction","Business Continuity / Disaster Recovery","Sustainability"], country:"United States", date_of_publication:"2023-10-31", main_challenge:"Aging endpoints and roaming workstations; need better mobility and security for clinicians."},
+    {company_name:"ADN Distribution", vertical:["Other"], asset_type:["Web Page","PDF"], igel_use_cases:["User Experience","TCO / Cost Reduction","Sustainability"], country:"Germany", date_of_publication:"2023-10-31", main_challenge:"Diverse OS and hardware leading to complexity and maintenance efforts."},
+    {company_name:"Tyler ISD", vertical:["Education"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","User Experience","TCO / Cost Reduction","Sustainability","Business Continuity / Disaster Recovery"], country:"United States", date_of_publication:"2023-10-31", main_challenge:"Aging endpoints and limited resources; need secure, consistent digital experiences."},
+    {company_name:"Sympany", vertical:["Financial Services"], asset_type:["Web Page","PDF"], igel_use_cases:["User Experience","TCO / Cost Reduction","Sustainability"], country:"Switzerland", date_of_publication:"2023-10-31", main_challenge:"Standardize IT environment and reduce complexity and maintenance."},
+    {company_name:"Getech", vertical:["Other"], asset_type:["Web Page","PDF"], igel_use_cases:["Remote Work","TCO / Cost Reduction"], country:"United Kingdom", date_of_publication:"2023-06-15", main_challenge:"Shift from Citrix to AVD to enhance flexibility and reduce costs."},
+    {company_name:"Pennine Acute NHS", vertical:["Healthcare"], asset_type:["Web Page","PDF"], igel_use_cases:["Preventative Security Model","Remote Work","User Experience","Sustainability","Business Continuity / Disaster Recovery","TCO / Cost Reduction"], country:"United Kingdom", date_of_publication:"2021-07-20", main_challenge:"EoL devices, modern app rollout, and centralized management across sites."},
+    {company_name:"Markerstudy Group", vertical:["Financial Services"], asset_type:["Web Page","PDF","Video"], igel_use_cases:["Remote Work","TCO / Cost Reduction","Sustainability","Business Continuity / Disaster Recovery","User Experience","Preventative Security Model"], country:"United Kingdom", date_of_publication:"2021-11-15", main_challenge:"Rapidly enable remote work for 3k+ staff and minimize hardware spend."},
+    {company_name:"Kaleida Health", vertical:["Healthcare"], asset_type:["Web Page","PDF"], igel_use_cases:["Remote Work","User Experience","Sustainability","Business Continuity / Disaster Recovery","TCO / Cost Reduction","Preventative Security Model"], country:"United States", date_of_publication:"2021-07-01", main_challenge:"Aging hardware, inconsistent UX; desire to standardize VDI clinical and remote access."},
+    {company_name:"Conn’s HomePlus", vertical:["Retail"], asset_type:["Web Page","PDF"], igel_use_cases:["Remote Work","Preventative Security Model","Business Continuity / Disaster Recovery","TCO / Cost Reduction"], country:"United States", date_of_publication:"2021-03-01", main_challenge:"Enable secure PCI-DSS compliant remote work for call center agents quickly."},
+    {company_name:"Standard Life Assurance", vertical:["Financial Services"], asset_type:["Web Page","PDF","Video"], igel_use_cases:["Remote Work","Preventative Security Model","Business Continuity / Disaster Recovery","TCO / Cost Reduction","User Experience"], country:"United Kingdom", date_of_publication:"2021-07-27", main_challenge:"Repurpose hardware to enable 4500 staff WFH, easy management."},
+    {company_name:"OneBlood", vertical:["Healthcare"], asset_type:["Web Page","PDF"], igel_use_cases:["TCO / Cost Reduction","Sustainability","User Experience","Preventative Security Model"], country:"United States", date_of_publication:"2020-11-01", main_challenge:"Migrate to Citrix VDI by repurposing 1,100+ aging thin clients cost-effectively."},
+    {company_name:"Lineas", vertical:["Manufacturing"], asset_type:["Web Page","PDF"], igel_use_cases:["Remote Work","User Experience","Business Continuity / Disaster Recovery","TCO / Cost Reduction","Preventative Security Model"], country:"Belgium", date_of_publication:"2023-10-15", main_challenge:"From complex local desktops to centralized virtual IT with low cost and high flexibility."},
+    {company_name:"RSHP", vertical:["Manufacturing"], asset_type:["Web Page","PDF"], igel_use_cases:["Remote Work","User Experience","Business Continuity / Disaster Recovery","TCO / Cost Reduction","Preventative Security Model"], country:"United Kingdom", date_of_publication:"2020-10-01", main_challenge:"Enable hotdesking & remote access; repurpose Dell workstations with centralized mgmt."},
+    {company_name:"Saskatchewan Polytechnic", vertical:["Education"], asset_type:["Web Page","PDF"], igel_use_cases:["TCO / Cost Reduction","User Experience","Simplified Management","Enhanced Security"], country:"Canada", date_of_publication:"2020-09-02", main_challenge:"Securely manage 3,200 endpoints in labs across 4 campuses with flexibility and recycling."},
+    {company_name:"City of Corona", vertical:["Government"], asset_type:["Web Page","PDF"], igel_use_cases:["Business Continuity / Disaster Recovery","Remote Work","TCO / Cost Reduction","User Experience"], country:"United States", date_of_publication:"2020-07-01", main_challenge:"On-prem desktops hinder scalability and continuity; need cloud workspaces for emergencies."},
+    {company_name:"Private Investment Firm", vertical:["Financial Services"], asset_type:["Web Page","PDF"], igel_use_cases:["Remote Work","Business Continuity / Disaster Recovery","TCO / Cost Reduction","User Experience"], country:"United States", date_of_publication:"2020-07-01", main_challenge:"HQ relocation with remote execs; adopt WVD quickly with validated thin solution."},
+    {company_name:"Crisis at Christmas", vertical:["Government"], asset_type:["Web Page","PDF"], igel_use_cases:["Business Continuity / Disaster Recovery","User Experience","TCO / Cost Reduction"], country:"United Kingdom", date_of_publication:"2020-06-01", main_challenge:"Rapid, secure IT setup & teardown across temporary locations for thousands of guests."},
+    {company_name:"First Financial Bank", vertical:["Financial Services"], asset_type:["Video"], igel_use_cases:["Remote Work","Preventative Security Model","User Experience","TCO / Cost Reduction"], country:"United States", date_of_publication:"2022-05-22", main_challenge:"Zero clients incompatible with peripherals/apps; needed centralized manageability and flexibility."},
+  ];
+  </script>
+
+  <script>
+    // --- Utility helpers ---
+    const colorSet=["#FFD101","#004D68","#770469","#001C99","#4500A6","#43433D","#22c55e","#ef4444","#f97316","#06b6d4"]; // IGEL + accents + neutrals
+    const layoutBase={paper_bgcolor:'#0e0e0e', plot_bgcolor:'#0e0e0e', font:{color:'#EDEDED', family:'Manrope, Arial, sans-serif'}, margin:{t:36,r:24,b:48,l:48}};
+    const toYear = d=>{ if(!d) return null; const y = new Date(d).getFullYear(); return isNaN(y)? null:y; };
+
+    function aggregateVerticalCounts() {
+      const counts={};
+      CASES.forEach(c=>{(c.vertical||["Unknown"]).forEach(v=>{const key=v||"Unknown"; counts[key]=(counts[key]||0)+1;});});
+      return counts;
+    }
+
+    function aggregateYearCounts(){
+      const counts={};
+      CASES.forEach(c=>{const y=toYear(c.date_of_publication)||'Unknown'; counts[y]=(counts[y]||0)+1;});
+      return counts;
+    }
+
+    function aggregateUseCases(){
+      const counts={};
+      CASES.forEach(c=>{(c.igel_use_cases||[]).forEach(u=>{counts[u]=(counts[u]||0)+1;});});
+      return counts;
+    }
+
+    function aggregateAssetType(){
+      const counts={};
+      CASES.forEach(c=>{(c.asset_type||["Web Page"]).forEach(a=>{counts[a]=(counts[a]||0)+1;});});
+      return counts;
+    }
+
+    function countryToRegion(country){
+      if(!country) return 'Unknown';
+      const EMEA=['United Kingdom','Netherlands','Sweden','Norway','Belgium','Germany','Switzerland','Japan'];
+      const AMER=['United States','Canada'];
+      const APAC=['Australia','Japan'];
+      if(AMER.includes(country)) return 'Americas';
+      if(EMEA.includes(country)) return 'EMEA';
+      if(APAC.includes(country)) return 'APAC';
+      return 'Other';
+    }
+
+    function aggregateRegionCountry(){
+      const nodes=[]; // for sunburst: labels, parents, values
+      // Build nested map
+      const map={};
+      CASES.forEach(c=>{
+        const country=c.country||'Unknown';
+        const region=countryToRegion(country);
+        map[region] = map[region]||{};
+        map[region][country] = (map[region][country]||0)+1;
+      });
+      return map;
+    }
+
+    function aggregateChallengeKeywords(){
+      const stop = new Set(('a,an,the,and,or,of,for,to,with,by,in,on,at,from,over,across,while,as,be,are,is,was,were,into,its,their,our,his,her,it,they,them,this,that,those,these,than,need,needs,needed,using,use,users,staff,team,teams,across,enable,enabling,provide,providing,rapidly,rapid,quick,quickly,fast,faster,time,high,low,lower,reduce,reducing,reduced,improve,improving,improved,security,secure,secures,endpoint,endpoints,desktop,desktops,devices,device,management,manage,managing,centralized,centralise,centrally,complex,complexity,cost,costs,efficient,efficiency,efficiencies,support,experience,user,ux,windows,os,igel,virtual,desktop,daas,vdi,environment,environments,thin,clients,client,solution,solutions,work,workflows,workstations,remote,hybrid,cloud,hardware,software,legacy,aging,old,new,peripherals,apps,application,applications,login,logins,compliance,gdpr,pc,pci,operations,across,multiple,simple,simplify,simplified').split(','));
+      const counts={};
+      CASES.forEach(c=>{
+        const text=(c.main_challenge||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ');
+        text.split(/\s+/).forEach(w=>{if(!w||stop.has(w)||w.length<4) return; counts[w]=(counts[w]||0)+1;});
+      });
+      return counts;
+    }
+
+    function aggregateVerticalsOverTime(){
+      const map={}; // {year:{vertical:count}}
+      CASES.forEach(c=>{
+        const y=toYear(c.date_of_publication); if(!y) return; 
+        (c.vertical||['Unknown']).forEach(v=>{
+          map[y]=map[y]||{}; map[y][v]=(map[y][v]||0)+1;
+        });
+      });
+      return map;
+    }
+
+    // --- Renderers ---
+    function renderPieVerticals(){
+      const counts=aggregateVerticalCounts();
+      const labels=Object.keys(counts);
+      const values=labels.map(k=>counts[k]);
+      const total=values.reduce((a,b)=>a+b,0);
+      const perc=values.map(v=>Math.round(v/total*1000)/10);
+      const trace={type:'pie', labels, values, text:perc.map(p=>p+'%'), textinfo:'label+percent', hole:0.25, marker:{colors:colorSet}};
+      const layout={...layoutBase, showlegend:true, legend:{font:{color:'#EDEDED'}}, title:{text:'Verticals as % of total',font:{color:'#FFD101',size:16}}};
+      Plotly.newPlot('pie-verticals',[trace],layout,{displayModeBar:false,responsive:true});
+    }
+
+    function renderBarVerticals(){
+      const counts=aggregateVerticalCounts();
+      const labels=Object.keys(counts);
+      const values=labels.map(k=>counts[k]);
+      const trace={type:'bar', x:labels, y:values, marker:{color:colorSet}};
+      const layout={...layoutBase, title:{text:'Verticals by Number',font:{color:'#FFD101',size:16}}, xaxis:{tickangle:-15, gridcolor:'#2A2A2A'}, yaxis:{gridcolor:'#2A2A2A'}};
+      Plotly.newPlot('bar-verticals',[trace],layout,{displayModeBar:false,responsive:true});
+    }
+
+    function renderTimelineYear(){
+      const counts=aggregateYearCounts();
+      const years=Object.keys(counts).filter(y=>y!=='Unknown').map(y=>+y).sort((a,b)=>a-b);
+      const values=years.map(y=>counts[y]);
+      const trace={type:'scatter', mode:'lines+markers', x:years, y:values, line:{shape:'spline'}, marker:{size:8,color:'#FFD101'}};
+      const layout={...layoutBase, title:{text:'How Many per Year',font:{color:'#FFD101',size:16}}, xaxis:{dtick:1, gridcolor:'#2A2A2A'}, yaxis:{gridcolor:'#2A2A2A'}};
+      Plotly.newPlot('timeline-year',[trace],layout,{displayModeBar:false,responsive:true});
+    }
+
+    function renderUseCases(){
+      const counts=aggregateUseCases();
+      const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+      const labels=entries.map(e=>e[0]);
+      const values=entries.map(e=>e[1]);
+      const trace={type:'bar', x:values, y:labels, orientation:'h', marker:{color:labels.map((_,i)=>colorSet[i%colorSet.length])}};
+      const layout={...layoutBase, title:{text:'IGEL Use Cases (Count)',font:{color:'#FFD101',size:16}}, xaxis:{gridcolor:'#2A2A2A'}, yaxis:{automargin:true}};
+      Plotly.newPlot('bar-usecases',[trace],layout,{displayModeBar:false,responsive:true});
+    }
+
+    function renderAssetType(){
+      const counts=aggregateAssetType();
+      const labels=Object.keys(counts); const values=labels.map(k=>counts[k]);
+      const trace={type:'pie', labels, values, hole:.35, marker:{colors:labels.map((_,i)=>colorSet[i%colorSet.length])}};
+      const layout={...layoutBase, title:{text:'Asset Type Breakdown',font:{color:'#FFD101',size:16}}, showlegend:true};
+      Plotly.newPlot('pie-assettype',[trace],layout,{displayModeBar:false,responsive:true});
+    }
+
+    function renderRegionCountry(){
+      const map=aggregateRegionCountry();
+      const labels=['World']; const parents=['']; const values=[0];
+      Object.keys(map).forEach(region=>{
+        const regionCount = Object.values(map[region]).reduce((a,b)=>a+b,0);
+        labels.push(region); parents.push('World'); values.push(regionCount);
+        Object.entries(map[region]).forEach(([country,count])=>{labels.push(country); parents.push(region); values.push(count);});
+      });
+      values[0]=values.slice(1).reduce((a,b)=>a+b,0);
+      const trace={type:'sunburst', labels, parents, values, branchvalues:'total', marker:{line:{color:'#0e0e0e',width:2}}, insidetextfont:{color:'#fff'}, hovertemplate:'%{label}: %{value}<extra></extra>'};
+      const layout={...layoutBase, title:{text:'Region → Country',font:{color:'#FFD101',size:16}}};
+      Plotly.newPlot('sunburst-region',[trace],layout,{displayModeBar:false,responsive:true});
+    }
+
+    function renderChallenges(){
+      const counts=aggregateChallengeKeywords();
+      const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,15);
+      const labels=entries.map(e=>e[0]); const values=entries.map(e=>e[1]);
+      const trace={type:'bar', x:values, y:labels, orientation:'h', marker:{color:labels.map((_,i)=>colorSet[i%colorSet.length])}};
+      const layout={...layoutBase, title:{text:'Top Challenge Keywords',font:{color:'#FFD101',size:16}}, xaxis:{gridcolor:'#2A2A2A'}, yaxis:{automargin:true}};
+      Plotly.newPlot('bar-challenges',[trace],layout,{displayModeBar:false,responsive:true});
+    }
+
+    function renderVerticalsOverTime(){
+      const map=aggregateVerticalsOverTime();
+      const years=Object.keys(map).map(y=>+y).sort((a,b)=>a-b);
+      // Collect unique verticals
+      const vset=new Set(); years.forEach(y=>Object.keys(map[y]).forEach(v=>vset.add(v)));
+      const verticals=[...vset];
+      const series = verticals.map((v,idx)=>({
+        type:'scatter', mode:'lines', name:v, x:years, y:years.map(y=>map[y][v]||0), stackgroup:'one', line:{width:1}, fill:'tonexty', marker:{color:colorSet[idx%colorSet.length]}
+      }));
+      const layout={...layoutBase, title:{text:'Vertical Adoption Over Time (Stacked)',font:{color:'#FFD101',size:16}}, xaxis:{dtick:1, gridcolor:'#2A2A2A'}, yaxis:{gridcolor:'#2A2A2A'}};
+      Plotly.newPlot('area-verticals-year',series,layout,{displayModeBar:false,responsive:true});
+    }
+
+    // --- Tab controls & keyboard navigation ---
+    const tabs=[...document.querySelectorAll('[role="tabpanel"]')];
+    const btns=[...document.querySelectorAll('[role="tab"]')];
+    function showTab(i){
+      tabs.forEach((t,idx)=>{t.hidden = idx!==i;});
+      btns.forEach((b,idx)=>{b.setAttribute('aria-selected', idx===i ? 'true':'false');});
+      // Lazy-render charts on first view
+      switch(i){
+        case 0: if(!document.getElementById('pie-verticals').dataset.ready){renderPieVerticals(); document.getElementById('pie-verticals').dataset.ready=1;} break;
+        case 1: if(!document.getElementById('bar-verticals').dataset.ready){renderBarVerticals(); document.getElementById('bar-verticals').dataset.ready=1;} break;
+        case 2: if(!document.getElementById('timeline-year').dataset.ready){renderTimelineYear(); document.getElementById('timeline-year').dataset.ready=1;} break;
+        case 3: if(!document.getElementById('bar-usecases').dataset.ready){renderUseCases(); document.getElementById('bar-usecases').dataset.ready=1;} break;
+        case 4: if(!document.getElementById('pie-assettype').dataset.ready){renderAssetType(); document.getElementById('pie-assettype').dataset.ready=1;} break;
+        case 5: if(!document.getElementById('sunburst-region').dataset.ready){renderRegionCountry(); document.getElementById('sunburst-region').dataset.ready=1;} break;
+        case 6: if(!document.getElementById('bar-challenges').dataset.ready){renderChallenges(); document.getElementById('bar-challenges').dataset.ready=1;} break;
+        case 7: if(!document.getElementById('area-verticals-year').dataset.ready){renderVerticalsOverTime(); document.getElementById('area-verticals-year').dataset.ready=1;} break;
+      }
+    }
+    btns.forEach((b,idx)=>b.addEventListener('click',()=>showTab(idx)));
+    document.addEventListener('keydown',e=>{
+      const current = btns.findIndex(b=>b.getAttribute('aria-selected')==='true');
+      if(e.key>='1' && e.key<='8'){ showTab(parseInt(e.key,10)-1); return; }
+      if(e.key==='ArrowRight'){ showTab(Math.min(current+1, tabs.length-1)); }
+      if(e.key==='ArrowLeft'){ showTab(Math.max(current-1, 0)); }
+    });
+
+    // Render first tab immediately
+    showTab(0);
+  </script>
+</body>
+</html>
