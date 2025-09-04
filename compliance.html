@@ -1,0 +1,155 @@
+<!-- IGEL Interactive Data Story: Option 1 (Layer Cake) - HTML + Plotly.js -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IGEL OT Compliance - Visual Data Story</title>
+  <!-- IGEL Brand Colors and Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Manrope:400,600,700&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body { background: #FFFFFF; font-family: 'Manrope', Arial, sans-serif; color: #141414; margin: 0; padding: 0; }
+    .header { background: #FFD101; display: flex; align-items: center; padding: 28px 40px 12px 40px; border-bottom: 4px solid #141414; }
+    .header-logo { height: 56px; margin-right: 28px; }
+    .header-title { font-size: 2.7rem; font-weight: 700; letter-spacing: -1px; }
+    .subheading { color: #4500A6; font-size: 1.15rem; font-weight: 500; margin-top: 10px; margin-bottom: 30px; padding-left: 68px; }
+    .container { max-width: 1050px; margin: 0 auto; padding: 38px 24px 32px 24px; }
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .pillar-card { background: #F8F9FA; border-radius: 18px; box-shadow: 0 4px 18px rgba(20,20,20,0.07); padding: 18px 16px 16px 16px; transition: box-shadow 0.22s; border: 2.3px solid #FFD101; cursor: pointer; position: relative; }
+    .pillar-card:hover { box-shadow: 0 8px 32px rgba(69,0,166,0.12); border-color: #4500A6; }
+    .pillar-title { font-size: 1.25rem; font-weight: 700; color: #141414; margin-bottom: 8px; }
+    .compliance-status { font-size: 1.05rem; font-weight: 600; border-radius: 16px; padding: 5px 15px; display: inline-block; margin-bottom: 7px; }
+    .status-green { background: #c8f694; color: #225600; }
+    .status-yellow { background: #fffab3; color: #b99500; }
+    .status-blue { background: #e4f0ff; color: #0070cc; }
+    .status-gray { background: #ececec; color: #888888; }
+    .pillar-desc { font-size: 0.98rem; margin-bottom: 12px; color: #43433D; }
+    .partner-logos { display: flex; gap: 11px; margin-top: 7px; flex-wrap: wrap; }
+    .partner-logo { height: 28px; filter: grayscale(0.35) contrast(1.05); opacity: 0.87; background: #fff; border-radius: 6px; padding: 2px 4px; box-shadow: 0 2px 8px rgba(68,0,166,0.07); }
+    .card-caption { font-size: 0.88rem; color: #4500A6; margin-top: 3px; font-style: italic; }
+    .plotly-embed { margin: 38px 0 0 0; }
+    .filters { margin: 16px 0 24px 0; padding-left: 4px; display: flex; gap: 20px; align-items: center; }
+    .filter-label { font-size: 1.01rem; font-weight: 600; color: #141414; margin-right: 6px; }
+    select { padding: 6px 12px; font-family: 'Manrope', Arial, sans-serif; font-size: 1rem; border: 1.3px solid #ccc; border-radius: 7px; }
+    @media (max-width: 900px) { .card-grid { grid-template-columns: 1fr; } .header-title { font-size: 1.6rem; } }
+    @media (max-width: 550px) { .container { padding: 14px 4px; } .header { padding: 13px 5px 7px 5px; } .header-logo { height: 32px; margin-right: 10px; } .subheading { font-size: 0.98rem; padding-left: 44px; } }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img class="header-logo" src="https://raw.githubusercontent.com/Broadwood11/images/main/IGEL_logo_yellow.png" alt="IGEL Logo">
+    <span class="header-title">IGEL OT Compliance Storyboard</span>
+  </div>
+  <div class="subheading">Visualizing Secure-by-Design: How IGEL + Partners Deliver Layered Compliance for OT Endpoints</div>
+  <div class="container">
+    <div class="filters">
+      <span class="filter-label">Pillar:</span>
+      <select id="pillarFilter">
+        <option value="All">All</option>
+        <option value="Device">Device</option>
+        <option value="Security">Security</option>
+        <option value="Applications">Applications</option>
+      </select>
+      <span class="filter-label">Compliance:</span>
+      <select id="complianceFilter">
+        <option value="All">All</option>
+        <option value="Fully Compliant">Fully Compliant</option>
+        <option value="Supports">Supports</option>
+        <option value="Partially Compliant">Partially Compliant</option>
+        <option value="Not Applicable">Not Applicable</option>
+        <option value="Limited Compliance">Limited Compliance</option>
+      </select>
+    </div>
+    <div class="card-grid" id="pillarGrid"></div>
+    <div class="plotly-embed" id="complianceChart"></div>
+  </div>
+  <script>
+    // IGEL Brand Palette
+    const IGEL_COLORS = {
+      yellow: '#FFD101',
+      black: '#141414',
+      white: '#FFFFFF',
+      retail: '#4500A6',
+      healthcare: '#004D68',
+      finserv: '#770469',
+      government: '#001C99',
+      manufacturing: '#43433D',
+      green: '#c8f694',
+      blue: '#e4f0ff',
+      gray: '#ececec',
+    };
+    const CAPABILITIES = [
+      { pillar: 'Device', title: 'Device Inventory & Status', compliance: 'Fully Compliant', desc: 'IGEL UMS inventories all managed endpoints in real time. Partners extend inventory to unmanaged/IT+OT devices.', partners: [ { name: 'ControlUp', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/33/ControlUp_logo.png' }, { name: 'ForeScout', logo: 'https://raw.githubusercontent.com/Broadwood11/images/main/ForeScout_logo.png' } ], caption: '“Know every device, always.”' },
+      { pillar: 'Device', title: 'X.509 & Cert Management', compliance: 'Supports', desc: 'Device certificates supported natively; partner solutions extend to PLC/ICS certs and monitor deployment compliance.', partners: [ { name: 'Thales', logo: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Thales_Logo.svg' }, { name: 'Okta', logo: 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Okta_logo.svg' } ], caption: '“Trust starts at the endpoint.”' },
+      { pillar: 'Device', title: 'Authorization & Posture Check', compliance: 'Supports', desc: 'IGEL integrates with Cisco ISE/ForeScout for device authorization and posture-based network access.', partners: [ { name: 'Cisco', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Cisco_logo_blue_2016.svg' }, { name: 'ForeScout', logo: 'https://raw.githubusercontent.com/Broadwood11/images/main/ForeScout_logo.png' } ], caption: '“Only compliant devices get in.”' },
+      { pillar: 'Security', title: 'App Allowlisting & Package Signing', compliance: 'Fully Compliant', desc: 'IGEL OS enforces cryptographically signed apps; DeviceTRUST & ForeScout enable allowlists and validation.', partners: [ { name: 'DeviceTRUST', logo: 'https://www.devicetrust.com/wp-content/uploads/2019/01/devicetrust-logo.png' }, { name: 'ForeScout', logo: 'https://raw.githubusercontent.com/Broadwood11/images/main/ForeScout_logo.png' } ], caption: '“Only trusted apps run.”' },
+      { pillar: 'Security', title: 'USB & Port Control', compliance: 'Fully Compliant', desc: 'Native policies for USB/block device governance, granular control, and logging. Partners enable advanced monitoring and remediation.', partners: [ { name: 'ThinScale', logo: 'https://www.thinscale.com/wp-content/uploads/2021/06/thinscale-logo.png' }, { name: 'DeviceTRUST', logo: 'https://www.devicetrust.com/wp-content/uploads/2019/01/devicetrust-logo.png' } ], caption: '“USB risk, locked down.”' },
+      { pillar: 'Security', title: 'Automated Patch & Compliance', compliance: 'Fully Compliant', desc: 'UMS automates patch compliance; ControlUp and ForeScout give visibility/detection for out-of-policy endpoints.', partners: [ { name: 'ControlUp', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/33/ControlUp_logo.png' }, { name: 'ForeScout', logo: 'https://raw.githubusercontent.com/Broadwood11/images/main/ForeScout_logo.png' } ], caption: '“Stay ahead, stay secure.”' },
+      { pillar: 'Applications', title: 'App Inventory & Policy', compliance: 'Partially Compliant', desc: 'Inventory for IGEL-delivered packages native; broader OT app inventory via partner integration.', partners: [ { name: 'ServiceNow', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/ServiceNow_logo.svg' }, { name: 'ForeScout', logo: 'https://raw.githubusercontent.com/Broadwood11/images/main/ForeScout_logo.png' } ], caption: '“Every app, accounted for.”' },
+      { pillar: 'Applications', title: 'RBAC & Policy Enforcement', compliance: 'Fully Compliant', desc: 'Role-based/app-based access enforced by DeviceTRUST and partner context; ForeScout offers policy-based control.', partners: [ { name: 'DeviceTRUST', logo: 'https://www.devicetrust.com/wp-content/uploads/2019/01/devicetrust-logo.png' }, { name: 'ForeScout', logo: 'https://raw.githubusercontent.com/Broadwood11/images/main/ForeScout_logo.png' } ], caption: '“Only the right access, every time.”' },
+      { pillar: 'Applications', title: 'Vulnerability Management', compliance: 'Partially Compliant', desc: 'Vuln mgmt for IGEL apps native; partner/SIEM integration for full OT stack.', partners: [ { name: 'ServiceNow', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/ServiceNow_logo.svg' }, { name: 'Splunk', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/Splunk_logo.svg' } ], caption: '“Every weakness, addressed.”' }
+    ];
+    function renderCards() {
+      const pillar = document.getElementById('pillarFilter').value;
+      const compliance = document.getElementById('complianceFilter').value;
+      const grid = document.getElementById('pillarGrid');
+      grid.innerHTML = '';
+      CAPABILITIES.filter(cap => (pillar === 'All' || cap.pillar === pillar) && (compliance === 'All' || cap.compliance === compliance)).forEach(cap => {
+        const card = document.createElement('div');
+        card.className = 'pillar-card';
+        let compClass = '';
+        switch (cap.compliance) {
+          case 'Fully Compliant': compClass = 'status-green'; break;
+          case 'Supports': compClass = 'status-blue'; break;
+          case 'Partially Compliant': compClass = 'status-yellow'; break;
+          case 'Not Applicable': compClass = 'status-gray'; break;
+          case 'Limited Compliance': compClass = 'status-yellow'; break;
+        }
+        card.innerHTML = `<div class="pillar-title">${cap.title}</div><div class="compliance-status ${compClass}">${cap.compliance}</div><div class="pillar-desc">${cap.desc}</div><div class="partner-logos">${cap.partners.map(p => `<img class="partner-logo" title="${p.name}" src="${p.logo}" alt="${p.name}">`).join('')}</div><div class="card-caption">${cap.caption}</div>`;
+        grid.appendChild(card);
+      });
+    }
+    document.getElementById('pillarFilter').onchange = renderCards;
+    document.getElementById('complianceFilter').onchange = renderCards;
+    renderCards();
+    function plotComplianceChart() {
+      const byPillar = {};
+      CAPABILITIES.forEach(cap => {
+        if (!byPillar[cap.pillar]) byPillar[cap.pillar] = {};
+        if (!byPillar[cap.pillar][cap.compliance]) byPillar[cap.pillar][cap.compliance] = 0;
+        byPillar[cap.pillar][cap.compliance]++;
+      });
+      const pillars = Object.keys(byPillar);
+      const complianceStates = ['Fully Compliant', 'Supports', 'Partially Compliant', 'Limited Compliance', 'Not Applicable'];
+      const colors = {
+        'Fully Compliant': IGEL_COLORS.green,
+        'Supports': IGEL_COLORS.blue,
+        'Partially Compliant': '#fffab3',
+        'Limited Compliance': '#fffab3',
+        'Not Applicable': IGEL_COLORS.gray,
+      };
+      const data = complianceStates.map(comp => ({
+        name: comp,
+        x: pillars,
+        y: pillars.map(p => byPillar[p][comp] || 0),
+        type: 'bar',
+        marker: { color: colors[comp] },
+        text: pillars.map(p => byPillar[p][comp] ? byPillar[p][comp] : ''),
+        textposition: 'auto',
+      }));
+      const layout = {
+        barmode: 'stack',
+        title: { text: 'Compliance State Breakdown by Pillar', font: { family: 'Manrope', size: 21, color: '#141414' } },
+        xaxis: { title: 'Pillar', tickfont: { family: 'Manrope', size: 15 } },
+        yaxis: { title: 'Count', tickfont: { family: 'Manrope', size: 15 }, rangemode: 'tozero' },
+        legend: { orientation: 'h', y: -0.22, font: { family: 'Manrope', size: 13 } },
+        plot_bgcolor: '#FFFFFF', paper_bgcolor: '#FFFFFF',
+        margin: { t: 60, l: 55, r: 24, b: 56 },
+      };
+      Plotly.newPlot('complianceChart', data, layout, {displayModeBar: false, responsive: true});
+    }
+    plotComplianceChart();
+  </script>
+</body>
+</html>
