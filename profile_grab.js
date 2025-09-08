@@ -1,70 +1,57 @@
-javascript:(function(){
-  const T=(s)=>s&&s.innerText?s.innerText.trim():"";
-  const norm=(txt)=>txt.replace(/\u00a0/g,' ').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
-  const clickAll=(filterRe)=>{[...document.querySelectorAll('button, a')].filter(b=>b&&/see more|more|...more/i.test(b.textContent)).forEach(b=>{try{b.click()}catch(e){}});};
-  clickAll();
+// Minimal LinkedIn → Markdown basics
+(function () {
+  const getText = (sel) => {
+    const el = document.querySelector(sel);
+    return el && el.innerText ? el.innerText.trim() : "";
+  };
+  const pick = (...sels) => {
+    for (const s of sels) {
+      const v = getText(s);
+      if (v) return v;
+    }
+    return "";
+  };
 
-  // Core selectors w/ fallbacks (LI changes classes often)
-  const name = T(document.querySelector('.pv-text-details__left-panel h1')) || T(document.querySelector('h1.text-heading-xlarge')) || T(document.querySelector('h1'));
-  const headline = T(document.querySelector('.pv-text-details__left-panel .text-body-medium')) || T(document.querySelector('.text-body-medium.break-words'));
-  const aboutSec = document.querySelector('section[id*="about"], section.pv-about-section, div#about');
-  const about = aboutSec ? norm(aboutSec.innerText.replace(/^About\s*/i,'')) : '';
+  // Name + headline (robust fallbacks)
+  const name = pick("h1.text-heading-xlarge", ".pv-text-details__left-panel h1", "header h1", "h1");
+  const headline = pick(".text-body-medium.break-words", ".pv-text-details__left-panel .text-body-medium");
 
-  // Experience section: take first 6 visible items
-  const expSec = document.querySelector('section[id*="experience"], section.pv-profile-section.experience-section, div#experience');
-  let experiences=[];
-  if(expSec){
-    const items=[...expSec.querySelectorAll('li, .pvs-entity')].slice(0,6);
-    experiences = items.map(li=>{
-      // Try to pull lines: role, company, dates/location
-      const lines = [...li.querySelectorAll('span[aria-hidden="true"], .t-14, .t-16, .mr1')].map(s=>s.innerText.trim()).filter(Boolean);
-      const uniq = [...new Set(lines)].filter(x=>!/^·$/.test(x) && !/^See less$/i.test(x));
-      const short = uniq.join(' — ').replace(/\s+—\s+/g,' — ').replace(/\s{2,}/g,' ').trim();
-      return short || li.innerText.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,3).join(' — ');
-    }).filter(Boolean);
-  }
+  // Try to snag the first visible Experience row (best-effort, optional)
+  let current = "";
+  try {
+    const expRoot = document.querySelector('section[id*="experience"], #experience');
+    if (expRoot) {
+      const first = expRoot.querySelector("li, .pvs-entity");
+      if (first) {
+        const lines = Array.from(first.querySelectorAll('span[aria-hidden="true"]'))
+          .map((s) => s.innerText.trim())
+          .filter(Boolean);
+        current = Array.from(new Set(lines)).slice(0, 2).join(" — ");
+      }
+    }
+  } catch (_) {}
 
-  // Education section: take first 4 items
-  const eduSec = document.querySelector('section[id*="education"], section.pv-profile-section.education-section, div#education');
-  let education=[];
-  if(eduSec){
-    const items=[...eduSec.querySelectorAll('li, .pvs-entity')].slice(0,4);
-    education = items.map(li=>{
-      const lines=[...li.querySelectorAll('span[aria-hidden="true"], .t-14, .t-16, .mr1')].map(s=>s.innerText.trim()).filter(Boolean);
-      const uniq=[...new Set(lines)].filter(Boolean);
-      return uniq.join(' — ').replace(/\s{2,}/g,' ').trim() || li.innerText.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,3).join(' — ');
-    }).filter(Boolean);
-  }
+  const url = location.href.split("?")[0];
 
-  const url = location.href.split('?')[0];
-  const today = new Date().toISOString().slice(0,10);
+  const md = [
+    `# ${name || "(Name not found)"}`,
+    headline ? `**${headline}**` : "",
+    current ? `\n**Current:** ${current}` : "",
+    `\n${url}\n`,
+  ].join("\n").replace(/\n{3,}/g, "\n\n").trim();
 
-  const md =
-`# ${name||'(Name not found)'}
-**${headline||''}**
+  const copy = async (text) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        alert("✅ Copied basics to clipboard. Paste into Notion.");
+      } else {
+        throw new Error("Clipboard API unavailable");
+      }
+    } catch {
+      prompt("Copy basics:", text);
+    }
+  };
 
-[LinkedIn Profile](${url})
-
-## Summary
-${about||'_No summary visible._'}
-
-## Experience
-${(experiences.length?experiences:['(No visible experience entries)']).map(x=>`- ${x}`).join('\n')}
-
-## Education
-${(education.length?education:['(No visible education entries)']).map(x=>`- ${x}`).join('\n')}
-
----
-
-**Quick facts**
-- Added: ${today}
-- Source: LinkedIn
-`;
-
-  const out = md.replace(/\n{3,}/g,'\n\n');
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(out).then(()=>alert('✅ Markdown copied. Paste into Notion.')).catch(()=>prompt('Copy Markdown:', out));
-  }else{
-    prompt('Copy Markdown:', out);
-  }
+  copy(md);
 })();
